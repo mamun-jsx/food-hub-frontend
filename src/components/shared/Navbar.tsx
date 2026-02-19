@@ -32,6 +32,12 @@ export default function Navbar() {
               >
                 Dashboard
               </Link>
+              <Link
+                href="/product"
+                className="text-black hover:text-green-600 transition"
+              >
+                Products
+              </Link>
             </div>
 
             {/* Right - Desktop Auth Buttons */}
@@ -43,10 +49,10 @@ export default function Navbar() {
                 Logout
               </Link>
               <Link
-                href="/signup"
-                className="bg-green-600 text-black  px-4 py-2 rounded-lg hover:bg-green-700 transition"
+                href="/register"
+                className="bg-green-600 text-white  px-4 py-2 rounded-lg hover:bg-green-700 transition"
               >
-                SignIn
+                Register
               </Link>
             </div>
 
@@ -80,7 +86,7 @@ export default function Navbar() {
                 className="bg-green-600 text-black px-4 py-2 rounded-lg text-center"
                 onClick={() => setIsOpen(false)}
               >
-                SignIn
+                Register
               </Link>
             </div>
           </div>

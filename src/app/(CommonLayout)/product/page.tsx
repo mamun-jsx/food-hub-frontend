@@ -1,15 +1,18 @@
-import { Button } from "@/components/ui/button";
 import { getAllProduct } from "../../../../service/product";
+import { ProductCard } from "@/components/modules/ProductsComponent/ProductCard";
 
 export default async function Page() {
-  const  data  = await getAllProduct();
-  console.log(data);
+  const data = await getAllProduct();
+
   return (
-    <div className="bg-green-200 py-10">
-      profile page is here
-      <div className=" bg-green-950">
-        <Button>Click me please....</Button>
-      </div>
+    <div className="py-10 grid grid-cols-1 items-center md:grid-cols-3 gap-4 w-10/12 mx-auto">
+      {data?.map((items) => {
+        return (
+          <div key={items?.id}>
+            <ProductCard payload={items} />
+          </div>
+        );
+      })}
     </div>
   );
 }

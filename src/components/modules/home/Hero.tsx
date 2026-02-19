@@ -26,7 +26,7 @@ export default function Hero() {
         </p>
 
         <Link
-          href="/foods"
+          href="/product"
           className="inline-block mt-8 bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg text-lg font-semibold transition duration-300"
         >
           View All
