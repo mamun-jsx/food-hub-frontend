@@ -27,9 +27,9 @@ export default function Hero() {
 
         <Link
           href="/product"
-          className="inline-block mt-8 bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg text-lg font-semibold transition duration-300"
+          className=" inline-block mt-8 bg-green-600 hover:bg-green-700 px-10 py-3 rounded-md text-lg font-semibold transition duration-300"
         >
-          View All
+          <span className="animate-pulse text-border hover:animate-none">View All</span>
         </Link>
       </div>
     </section>

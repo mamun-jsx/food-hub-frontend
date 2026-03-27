@@ -1,38 +1,14 @@
-import { cookies } from "next/headers";
+import axiosApi from "@/lib/axiosInstance";
 
-export const getAllProduct = async () => {
-  try {
-    const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
-      method: "GET",
-      headers: {
-        "Content-Type": "Application/json",
-      },
-      cache: "no-store",
-    });
-    const result = await res.json();
-    return result;
-  } catch (error) {
-    return Error(error);
-  }
+// get all meals for user
+export const fetchMeal = async () => {
+  const response = await axiosApi.get("/api/meals");
+  return response.data;
 };
-// ====================================
-// "use server"
-// export const addProduct = async (payload) => {
-//   const storeToken = await cookies();
-//   const token = storeToken.get("token")?.value;
-//   try {
-//     const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
-//       method: "POST",
-//       headers: {
-//         authorization: token,
-        // "Content-Type": "Application/json",
 
-//       },
-//       cache: "no-store",
-//     });
-//     const result = await res.json();
-//     return result;
-//   } catch (error) {
-//     return Error(error);
-//   }
-// };
+// get a single meal as meal details
+export const fetchProductById = async (id: string) => {
+  const response = await axiosApi.get(`/api/meals/${id}`);
+  return response.data;
+};
+

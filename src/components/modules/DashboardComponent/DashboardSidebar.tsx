@@ -4,7 +4,7 @@ import React from "react";
 export default function DashboardSidebar() {
   const navItems = [
     { name: "Home", href: "/" },
-    { name: "Add Products", href: "/add-products" },
+    { name: "Add Products", href: "/dashboard/add-products" },
     { name: "Orders", href: "/orders" },
     { name: "Users", href: "/users" },
   ];

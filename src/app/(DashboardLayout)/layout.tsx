@@ -14,10 +14,10 @@ export default async function DashboardLayout({
     <div className="flex min-h-screen">
       <DashboardSidebar />
       <main className="flex-1 ml-10 md:ml-6 mt-5">
-        {admin}
+        {/* {admin}
         {provider}
-        {user}
-        {/* {userRole === "admin" ? admin : userRole === "provider" ? provider : user} */}
+        {user} */}
+        {userRole === "admin" ? admin : userRole === "provider" ? provider : user}
       </main>
     </div>
   );
