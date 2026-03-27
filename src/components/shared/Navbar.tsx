@@ -2,10 +2,20 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-
+import { authClient } from "../../../service/auth/auth";
+import { useRouter } from "next/navigation";
 export default function Navbar() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-
+  const logOutFnc = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/login"); 
+        },
+      },
+    });
+  };
   return (
     <section>
       <nav className="bg-white shadow-md fixed w-full z-50 border-b-2 border-black">
@@ -45,7 +55,11 @@ export default function Navbar() {
               <Link href="/login" className="text-black hover:text-green-600">
                 Login
               </Link>
-              <Link href="/logout" className="text-black hover:text-green-600">
+              <Link
+                onClick={logOutFnc}
+                href="/logout"
+                className="text-black hover:text-green-600"
+              >
                 Logout
               </Link>
               <Link
