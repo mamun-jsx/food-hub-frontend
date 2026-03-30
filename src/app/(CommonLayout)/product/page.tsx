@@ -1,11 +1,11 @@
 import { ProductCard } from "@/components/modules/ProductsComponent/ProductCard";
-import { fetchMeal } from "../../../../service/product";
+import { fetchMeal } from "../../../../service/user-api-endpoint";
 import { IMeal } from "@/types/meal.Type"; // Ensure filename matches exactly
 
 export default async function Page() {
   const data = await fetchMeal();
   const mealLists: IMeal[] = data?.meal || [];
- 
+
   console.log("Products found:", mealLists.length);
   if (mealLists.length === 0) {
     return <h3 className="text-center my-10 ">No Meal Published Yet</h3>;

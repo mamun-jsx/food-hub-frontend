@@ -1,5 +1,5 @@
 import React from "react";
-import { fetchProductById } from "../../../../../service/product";
+import { fetchProductById } from "../../../../../service/user-api-endpoint";
 import { IMeal, IReview } from "@/types/meal.Type";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -99,9 +99,15 @@ const ProductDetailsPage = async ({ params }: PageProps) => {
               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
                 Provider ID
               </p>
-              <p className="text-sm font-mono text-slate-500">
-                {meal.providerId}
+              <p className="text-sm font-mono text-slate-500 mb-3">
+                {meal?.providerId}
               </p>
+              <Link
+                href={`/provider/${meal?.providerId}`}
+                className="px-2 py-1 border border-green-500 rounded hover:cursor-pointer hover:bg-green-400 hover:text-white hover:border-black"
+              >
+                provider&apos;s Items
+              </Link>
             </div>
           </div>
         </div>

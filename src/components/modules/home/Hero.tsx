@@ -1,3 +1,4 @@
+import BounceBtn from "@/components/shared/BounceBtn";
 import Link from "next/link";
 
 export default function Hero() {
@@ -25,11 +26,8 @@ export default function Hero() {
           with every bite.
         </p>
 
-        <Link
-          href="/product"
-          className=" inline-block mt-8 bg-green-600 hover:bg-green-700 px-10 py-3 rounded-md text-lg font-semibold transition duration-300"
-        >
-          <span className="animate-pulse text-border hover:animate-none">View All</span>
+        <Link href="/product" className=" inline-block mt-8">
+          <BounceBtn title="All Foods" />
         </Link>
       </div>
     </section>

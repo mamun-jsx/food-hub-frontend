@@ -15,7 +15,7 @@ export function LoginForm() {
   const [message, setMessage] = useState("");
 
   const loginCredential = async () => {
-    setMessage(""); // Clear old messages
+    setMessage("");
 
     // Validation check
     if (password.length < 8) {
@@ -44,7 +44,8 @@ export function LoginForm() {
       setLoading(false);
     }
   };
-
+ 
+ 
   return (
     <div className="max-w-md mx-auto space-y-6">
       <FieldGroup>
@@ -78,7 +79,7 @@ export function LoginForm() {
         <Button
           onClick={loginCredential}
           disabled={loading}
-          className="w-full bg-green-600 hover:bg-green-700 text-white"
+          className="w-full bg-green-600 hover:bg-green-700 text-white cursor-pointer"
         >
           {loading ? "Logging in..." : "Login"}
         </Button>
