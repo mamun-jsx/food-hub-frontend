@@ -5,8 +5,8 @@ export default function DashboardSidebar() {
   const navItems = [
     { name: "Home", href: "/" },
     { name: "Add Products", href: "/dashboard/add-products" },
-    { name: "Orders", href: "/orders" },
-    { name: "Users", href: "/users" },
+    { name: "Orders", href: "/dashboard/orders" },
+    { name: "Users", href: "/dashboard/users" },
   ];
 
   return (
