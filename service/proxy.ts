@@ -1,18 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUser } from "./auth";
 
-// This function can be marked `async` if using `await` inside
-export function proxy(request: NextRequest) {
-  const user = getUser();
-  if (!user) {
+export function middleware(request: NextRequest) {
+  const session = request.cookies.get("better-auth.session")?.value;
+
+  const protectedRoutes = ["/dashboard", "/profile"];
+
+  const isProtected = protectedRoutes.some((route) =>
+    request.nextUrl.pathname.startsWith(route),
+  );
+
+  if (isProtected && !session) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
-  return NextResponse.redirect(new URL("/home", request.url));
+
+  return NextResponse.next();
 }
 
-// Alternatively, you can use a default export:
-// export default function proxy(request: NextRequest) { ... }
-
 export const config = {
-  matcher: ["/dashboard", "/profile"],
+  matcher: ["/dashboard/:path*", "/profile/:path*"],
 };

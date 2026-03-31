@@ -4,7 +4,7 @@ import { authClient } from "../../../../service/auth/auth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-const Page = () => {
+const Profile = () => {
   const userAvater =
     "https://img.freepik.com/premium-vector/male-face-avatar-icon-set-flat-design-social-media-profiles_1281173-3806.jpg?w=360";
   const { data: session, isPending } = authClient.useSession();
@@ -23,7 +23,6 @@ const Page = () => {
   if (!session) {
     return null;
   }
-  console.log(session.user);
   const { name, email, image, emailVerified, createdAt, id } = session?.user;
 
   return (
@@ -81,4 +80,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default Profile;

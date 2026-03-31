@@ -28,3 +28,8 @@ export const getProfileById = async (id: string) => {
   const response = await axiosApi.get(`/api/get-provider/${id}`);
   return response.data;
 };
+// get a single user
+export const fetchAllOrderForUser = async () => {
+  const response = await axiosApi.get("/api/provider/orders");
+  return response.data;
+};
