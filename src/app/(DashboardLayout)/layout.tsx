@@ -4,11 +4,11 @@ import { useAuth } from "@/hooks/useAuth";
 
 export default function DashboardLayout({
   admin,
-  user,
+  customer,
   provider,
 }: {
   admin: React.ReactNode;
-  user: React.ReactNode;
+  customer: React.ReactNode;
   provider: React.ReactNode;
 }) {
   const { data: session, isPending } = useAuth();
@@ -25,7 +25,7 @@ export default function DashboardLayout({
       <main className="flex-1 ml-10 md:ml-6 mt-5">
         {role === "ADMIN" && admin}
         {role === "PROVIDER" && provider}
-        {role === "USER" && user}
+        {role === "CUSTOMER" && customer}
       </main>
     </div>
   );

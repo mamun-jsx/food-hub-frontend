@@ -22,7 +22,7 @@ export default function DashboardSidebar() {
 
   const navItemsForUser = [
     { name: "Home", href: "/" },
-    { name: "Orders", href: "/myorder" },
+    { name: "Orders", href: "/dashboard/orders" },
   ];
 
   // ✅ choose based on role

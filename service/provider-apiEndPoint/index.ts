@@ -39,3 +39,13 @@ export const updateMealByProvider = async (id: string, data) => {
   const res = await axiosApi.put(`/api/provider/meals/${id}`, data);
   return res.data;
 };
+
+// create provider profile
+export const createProviderProfile = async (data) => {
+  const res = await axiosApi.post("/api/provider/profile", { data });
+  return res.data;
+};
+export const updateProviderProfileData = async (data: any) => {
+  const res = await axiosApi.put("/api/provider/profile", data);
+  return res.data;
+};
