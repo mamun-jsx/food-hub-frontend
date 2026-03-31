@@ -33,16 +33,9 @@ export const deleteMealByProvider = async (id: string) => {
   const res = await axiosApi.delete(`/api/provider/meals/${id}`);
   return res.data;
 };
-type Meal = {
-  id: string;
-  name: string;
-  image: string;
-  price: number;
-  description: true;
-  category: string;
-};
+
 // update a product
-export const updateMealByProvider = async (id: string, data: Meal) => {
-  const res = await axiosApi.put(`/api/provider/meals/${id}`, { data });
+export const updateMealByProvider = async (id: string, data) => {
+  const res = await axiosApi.put(`/api/provider/meals/${id}`, data);
   return res.data;
 };

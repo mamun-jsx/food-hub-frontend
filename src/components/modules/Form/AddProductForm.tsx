@@ -61,7 +61,7 @@ export function AddProductForm() {
           price: "",
           image: "",
         });
-        alert("Data is saved");
+        alert("Data is saved")
       }
     } catch (err) {
       console.log("ERROR RESPONSE:", err.response?.data);
