@@ -23,6 +23,7 @@ export default function DashboardSidebar() {
   const navItemsForUser = [
     { name: "Home", href: "/" },
     { name: "Orders", href: "/dashboard/orders" },
+    { name: "View Cart", href: "/dashboard/view-cart" },
   ];
 
   // ✅ choose based on role

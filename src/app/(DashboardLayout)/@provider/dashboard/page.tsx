@@ -77,7 +77,7 @@ const Page = () => {
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">Provider Dashboard</h1>
-
+      <h3>You can Create your profile and also update your profile</h3>
       <div className="space-y-3 max-w-md">
         <input
           name="restaurantName"
@@ -110,18 +110,17 @@ const Page = () => {
           onChange={handleChange}
           className="border p-2 w-full"
         />
-
         <div className="flex gap-3">
           <button
             onClick={handleCreate}
-            className="bg-blue-500 text-white px-4 py-2"
+            className="bg-green-500 hover:cursor-pointer hover:bg-black  text-white px-4 py-2"
           >
             Create
           </button>
 
           <button
             onClick={handleUpdate}
-            className="bg-black text-white px-4 py-2"
+            className="bg-black hover:cursor-pointer hover:bg-green-500 text-white px-4 py-2"
           >
             Update
           </button>

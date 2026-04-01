@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Star, Clock, ShoppingCart, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import AddToCartButton from "@/components/modules/UserAction/AddToCartButton";
 
 interface PageProps {
   params: Promise<{ id: string }>; // In Next 15, params is a Promise
@@ -83,15 +84,8 @@ const ProductDetailsPage = async ({ params }: PageProps) => {
                 </h2>
               </div>
 
-              <div className="flex gap-3">
-                <Button
-                  size="lg"
-                  className="rounded-full bg-slate-900 px-8 hover:bg-green-600"
-                >
-                  <ShoppingCart className="mr-2" size={20} />
-                  Add to Cart
-                </Button>
-              </div>
+              
+                  <AddToCartButton meal={meal} />
             </div>
 
             {/* Provider/Seller Info Placeholder */}

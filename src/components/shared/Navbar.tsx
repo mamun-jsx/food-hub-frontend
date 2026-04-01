@@ -1,14 +1,52 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { authClient } from "../../../service/auth/auth";
 import { useRouter } from "next/navigation";
 import LoadingBtn from "./LoadingBtn";
+import { ShoppingCart } from "lucide-react";
 
 export default function Navbar() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  // ... (your existing state)
+  const [cartItems, setCartItems] = useState<any[]>([]);
+
+  // 1. Function to fetch latest data
+  const updateCartCount = () => {
+    const savedCart = localStorage.getItem("cartItems");
+    if (savedCart) {
+      return JSON.parse(savedCart);
+    } else {
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    // Run once on mount
+    setCartItems(updateCartCount());
+
+    // 2. Listen for the custom "cartUpdated" event from your AddToCart button
+    window.addEventListener("cartUpdated", () => {
+      setCartItems(updateCartCount());
+    });
+
+    // 3. Listen for changes from other tabs (optional but good)
+    window.addEventListener("storage", () => {
+      setCartItems(updateCartCount());
+    });
+
+    // Cleanup when component unmounts
+    return () => {
+      window.removeEventListener("cartUpdated", () => {
+        setCartItems(updateCartCount());
+      });
+      window.removeEventListener("storage", () => {
+        setCartItems(updateCartCount());
+      });
+    };
+  }, []);
 
   // get user session as current user..
   const { data: session, isPending } = authClient.useSession();
@@ -58,6 +96,7 @@ export default function Navbar() {
                   Dashboard
                 </Link>
               )}
+
               <Link
                 href="/product"
                 className="text-black hover:text-green-600 transition"
@@ -65,7 +104,17 @@ export default function Navbar() {
                 Products
               </Link>
             </div>
-
+            {session && (
+              <Link
+                className="flex items-center bg-black p-3   rounded-full"
+                href={"/dashboard/view-cart"}
+              >
+                <ShoppingCart className="text-white" />
+                <span className="text-white">
+                  {cartItems ? cartItems.length : 0}
+                </span>
+              </Link>
+            )}
             {/* Right - Desktop Auth Buttons */}
             {isPending ? (
               <LoadingBtn />
@@ -92,6 +141,7 @@ export default function Navbar() {
                   ""
                 )}
                 {session && <Link href={"/profile"}>Profile</Link>}
+
                 {/* login register  */}
 
                 {!session && (
