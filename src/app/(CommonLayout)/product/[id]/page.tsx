@@ -3,8 +3,7 @@ import { fetchProductById } from "../../../../../service/user-api-endpoint";
 import { IMeal, IReview } from "@/types/meal.Type";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Star, Clock, ShoppingCart, ArrowLeft } from "lucide-react";
+import { Star, Clock, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import AddToCartButton from "@/components/modules/UserAction/AddToCartButton";
 

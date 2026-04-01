@@ -28,8 +28,24 @@ export const getProfileById = async (id: string) => {
   const response = await axiosApi.get(`/api/get-provider/${id}`);
   return response.data;
 };
-// get orders 
+// get orders
 export const fetchAllOrderForUser = async () => {
   const response = await axiosApi.get("/api/provider/orders");
   return response.data;
+};
+
+// place an order
+export const placeOrderByUser = async (data) => {
+  const res = await axiosApi.post(`/api/orders`, { data });
+  console.log("response ", res.data);
+  return res.data;
+};
+// fetch order details
+export const fetchOrderDetailsByID = async (id: string) => {
+  const res = await axiosApi.get(`/api/orders/${id}`);
+  return res.data;
+};
+export const submitReview = async (payload) => {
+  const res = await axiosApi.post("/api/reviews", payload); 
+  return res.data;
 };

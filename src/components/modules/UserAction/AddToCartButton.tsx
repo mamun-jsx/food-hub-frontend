@@ -40,7 +40,7 @@ export default function AddToCartButton({ meal }: { meal: IMeal }) {
     <Button
       onClick={handleAddToCart}
       size="lg"
-      className="rounded-full bg-slate-900 px-8 hover:bg-green-600"
+      className="rounded-full bg-slate-900 px-8 hover:cursor-pointer hover:bg-green-600"
     >
       <ShoppingCart className="mr-2" size={20} />
       Add to Cart

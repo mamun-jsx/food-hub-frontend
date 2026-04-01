@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 const MyOrder = async () => {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -14,7 +15,7 @@ const MyOrder = async () => {
       <table className="min-w-full border text-sm">
         <thead className="bg-gray-100">
           <tr>
-            <th className="p-2 border">Order ID</th>
+            <th className="p-2 border">Order ID Click for details</th>
             <th className="p-2 border">Status</th>
             <th className="p-2 border">Total Price</th>
             <th className="p-2 border">Address</th>
@@ -26,7 +27,10 @@ const MyOrder = async () => {
         <tbody>
           {orders.map((order: any) => (
             <tr key={order.id} className="text-center">
-              <td className="p-2 border">{order.id}</td>
+              <Link className="underline text-blue-600 hover:text-green-500"
+               href={`/dashboard/orders/${order.id}`}>
+                {/* <td className="p-2 border">{order.id}</td> */} {order.id}
+              </Link>
               <td className="p-2 border">{order.status}</td>
               <td className="p-2 border">${order.totalPrice}</td>
               <td className="p-2 border">{order.address}</td>

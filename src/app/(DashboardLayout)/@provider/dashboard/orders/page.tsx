@@ -22,7 +22,8 @@ export default function ProviderViewOrders() {
       try {
         const data = await fetchProviderOrders();
 
-        console.log("🔥 Provider Orders:", data);
+      
+  
 
         setOrders(data.data); // IMPORTANT
       } catch (err) {
