@@ -17,7 +17,6 @@ export default function DashboardLayout({
     return <p>Unauthorized</p>;
   }
   const role = session?.user?.role;
-
   return (
     <div className="flex min-h-screen">
       <DashboardSidebar />

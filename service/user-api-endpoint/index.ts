@@ -46,6 +46,10 @@ export const fetchOrderDetailsByID = async (id: string) => {
   return res.data;
 };
 export const submitReview = async (payload) => {
-  const res = await axiosApi.post("/api/reviews", payload); 
+  const res = await axiosApi.post("/api/reviews", payload);
+  return res.data;
+};
+export const updateUserProfile = async (payload) => {
+  const res = await axiosApi.patch("/api/profile-update", payload);
   return res.data;
 };

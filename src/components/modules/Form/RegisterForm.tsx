@@ -1,4 +1,5 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,19 +15,48 @@ import { authClient } from "../../../../service/auth/auth";
 
 export function RegisterForm() {
   const router = useRouter();
+
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [name, setName] = useState("");
 
-  // signup as create user || register via better auth
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
   const handleRegister = async () => {
-    const { data, error } = await authClient.signUp.email({
-      name: name,
-      email: email,
-      password: password,
-      callbackURL: "/",
-    });
+    setMessage("");
+
+    // simple validation
+    if (!name || !email || !password) {
+      setMessage("All fields are required");
+      return;
+    }
+
+    if (password.length < 8) {
+      setMessage("Password must be at least 8 characters");
+      return;
+    }
+    setLoading(true);
+    try {
+      const { data, error } = await authClient.signUp.email({
+        name: name.toUpperCase(),
+        email,
+        password,
+        callbackURL: "/",
+      });
+
+      if (error) {
+        setMessage(error.message || "Register failed");
+      } else {
+        router.push("/");
+        router.refresh();
+      }
+    } catch (err) {
+      console.log(err);
+      setMessage("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -37,7 +67,7 @@ export function RegisterForm() {
           <FieldLabel htmlFor="name">Name</FieldLabel>
           <Input
             id="name"
-            value={email}
+            value={name}
             type="text"
             onChange={(e) => setName(e.target.value)}
             placeholder="Jordan Lee"
@@ -71,20 +101,23 @@ export function RegisterForm() {
           />
         </Field>
 
-        {/* Register Button */}
-        <Field orientation="horizontal" className="justify-between">
+        {/* Message */}
+        {message && <p className="text-red-500 text-sm">{message}</p>}
+
+        {/* Button */}
+        <Field orientation="horizontal">
           <Button
+            type="button"
             onClick={handleRegister}
-            type="submit"
             disabled={loading}
-            className="w-full bg-green-600 hover:bg-green-700 text-white cursor-pointer"
+            className="w-full bg-green-600 hover:bg-green-700 text-white"
           >
-            Register
+            {loading ? "Registering..." : "Register"}
           </Button>
         </Field>
       </FieldGroup>
 
-      {/* Login Section */}
+      {/* Login link */}
       <div className="text-center text-sm text-gray-600">
         <p>
           Already have an account?{" "}

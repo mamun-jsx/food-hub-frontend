@@ -49,3 +49,5 @@ export const updateProviderProfileData = async (data: any) => {
   const res = await axiosApi.put("/api/provider/profile", data);
   return res.data;
 };
+
+

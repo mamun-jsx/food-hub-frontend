@@ -9,7 +9,7 @@ const Profile = () => {
     "https://img.freepik.com/premium-vector/male-face-avatar-icon-set-flat-design-social-media-profiles_1281173-3806.jpg?w=360";
   const { data: session, isPending } = authClient.useSession();
   const router = useRouter();
-
+  
   useEffect(() => {
     if (!isPending && !session) {
       router.push("/login");
