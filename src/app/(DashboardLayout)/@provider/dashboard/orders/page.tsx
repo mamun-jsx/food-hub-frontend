@@ -74,7 +74,7 @@ export default function ProviderViewOrders() {
               <td className="p-2 border">{order.id.slice(0, 8)}...</td>
 
               {/* PRICE */}
-              <td className="p-2 border">${order.totalPrice}</td>
+              <td className="p-2 border">TK : {order.totalPrice}</td>
 
               {/* ADDRESS */}
               <td className="p-2 border">{order.address}</td>

@@ -30,13 +30,13 @@ export const getProfileById = async (id: string) => {
 };
 // get orders
 export const fetchAllOrderForUser = async () => {
-  const response = await axiosApi.get("/api/provider/orders");
+  const response = await axiosApi.get("/api/orders/");
   return response.data;
 };
 
 // place an order
 export const placeOrderByUser = async (data) => {
-  const res = await axiosApi.post(`/api/orders`, { data });
+  const res = await axiosApi.post(`/api/orders`, data);
   console.log("response ", res.data);
   return res.data;
 };

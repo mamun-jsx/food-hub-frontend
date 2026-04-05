@@ -9,18 +9,25 @@ import { useAuth } from "@/hooks/useAuth";
 
 export default function ViewCart() {
   const [cartItems, setCartItems] = useState<any[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [mounted, setMounted] = useState(false); // Prevents hydration mismatch
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [address, setAddress] = useState("");
   const [isPlacing, setIsPlacing] = useState(false);
 
   const userData = useAuth();
   const userId = userData?.data?.user?.id;
-
+  
+  // 1. Load cart only after component mounts in the browser
   useEffect(() => {
+    setMounted(true);
     const savedCart = localStorage.getItem("cartItems");
-    if (savedCart) setCartItems(JSON.parse(savedCart));
-    setIsLoaded(true);
+    if (savedCart) {
+      try {
+        setCartItems(JSON.parse(savedCart));
+      } catch (err) {
+        console.error("Error parsing cart:", err);
+      }
+    }
   }, []);
 
   const updateCart = (newCart: any[]) => {
@@ -84,7 +91,8 @@ export default function ViewCart() {
     }
   };
 
-  if (!isLoaded) return <div className="p-10 text-center">Loading...</div>;
+  // 2. Return null or a skeleton while waiting for mounting
+  if (!mounted) return <div className="p-10 text-center">Loading...</div>;
 
   if (cartItems.length === 0) {
     return (
@@ -107,10 +115,11 @@ export default function ViewCart() {
           {cartItems.map((item) => (
             <Card key={item.id} className="border-slate-200">
               <CardContent className="p-4 flex items-center gap-4">
-                <div className="relative h-20 w-20 rounded overflow-hidden">
+                {/* Parent MUST have relative for Image fill to work */}
+                <div className="relative h-20 w-20 rounded overflow-hidden flex-shrink-0">
                   <Image
-                    src={item.image}
-                    alt={item.name}
+                    src={item.image || "/placeholder.png"} // Fallback image
+                    alt={item.name || "Product"}
                     fill
                     className="object-cover"
                   />
@@ -120,17 +129,23 @@ export default function ViewCart() {
                   <p className="text-green-600 font-bold">{item.price} TK</p>
                 </div>
                 <div className="flex items-center gap-2 border rounded-lg px-2">
-                  <button onClick={() => changeQuantity(item.id, -1)}>
+                  <button
+                    onClick={() => changeQuantity(item.id, -1)}
+                    className="p-1"
+                  >
                     <Minus size={14} />
                   </button>
                   <span className="w-6 text-center">{item.quantity}</span>
-                  <button onClick={() => changeQuantity(item.id, 1)}>
+                  <button
+                    onClick={() => changeQuantity(item.id, 1)}
+                    className="p-1"
+                  >
                     <Plus size={14} />
                   </button>
                 </div>
                 <button
                   onClick={() => removeItem(item.id)}
-                  className="text-red-500"
+                  className="text-red-500 hover:bg-red-50 p-2 rounded"
                 >
                   <Trash2 size={20} />
                 </button>
@@ -160,7 +175,7 @@ export default function ViewCart() {
           <div className="bg-white rounded-2xl p-6 w-full max-w-md relative">
             <button
               onClick={() => setShowAddressModal(false)}
-              className="absolute top-4 right-4"
+              className="absolute top-4 right-4 text-gray-500 hover:text-black"
             >
               <X />
             </button>
@@ -173,7 +188,7 @@ export default function ViewCart() {
 
             <input
               type="text"
-              placeholder="e.g. Flat 4A, House 12, Road 5, Dhanmondi, Dhaka"
+              placeholder="e.g. House 12, Road 5, Dhaka"
               className="w-full border-2 border-slate-200 rounded-xl p-3 mb-6 focus:border-green-600 outline-none"
               value={address}
               onChange={(e) => setAddress(e.target.value)}

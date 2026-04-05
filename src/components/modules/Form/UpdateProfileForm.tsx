@@ -5,20 +5,17 @@ import { updateUserProfile } from "../../../../service/user-api-endpoint";
 
 const UpdateProfileForm = () => {
   const [userName, setUserName] = useState("");
-  const [userImage, setUserImage] = useState<File | null>(null);
+  const [userImage, setUserImage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const formData = new FormData();
-
-    formData.append("name", userName);
-    if (userImage) {
-      formData.append("image", userImage);
-    }
+    const payload: { name?: string; image?: string } = {};
+    if (userName) payload.name = userName;
+    if (userImage) payload.image = userImage;
 
     try {
-      await updateUserProfile(formData);
+      await updateUserProfile(payload);
       alert("Profile updated!");
     } catch (error) {
       console.log(error);
@@ -36,10 +33,12 @@ const UpdateProfileForm = () => {
         className="border p-2 w-full"
       />
 
-      {/* Image */}
+      {/* Image URL */}
       <input
-        type="file"
-        onChange={(e) => setUserImage(e.target.files?.[0] || null)}
+        type="text"
+        placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
+        value={userImage}
+        onChange={(e) => setUserImage(e.target.value)}
         className="border p-2 w-full"
       />
 

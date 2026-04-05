@@ -12,11 +12,27 @@ export default function DashboardLayout({
   provider: React.ReactNode;
 }) {
   const { data: session, isPending } = useAuth();
+
+  console.log("Dashboard Session:", session); // Debug
+  console.log("Role:", session?.user?.role); // Debug
+
   if (isPending) return <p>Loading...</p>;
   if (!session) {
-    return <p>Unauthorized</p>;
+    return <p>Unauthorized - No session found</p>;
   }
+
   const role = session?.user?.role;
+
+  // Debug: show what we have
+  if (!role) {
+    return (
+      <div>
+        <p>Error: User role not found</p>
+        <p>Session Data: {JSON.stringify(session)}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen">
       <DashboardSidebar />
