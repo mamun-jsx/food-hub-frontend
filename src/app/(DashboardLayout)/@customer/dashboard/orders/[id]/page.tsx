@@ -76,7 +76,7 @@ export default function OrderDetails({
       rating: Number(reviewData.rating),
       comment: reviewData.comment,
     };
-    console.log("Submitting Review Payload:", payload); // CHECK THIS IN CONSOLE
+    console.log("Submitting Review Payload:", payload); 
     if (!payload.userId || !payload.mealId) {
       alert("Missing User ID or Meal ID");
       return;
