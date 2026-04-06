@@ -1,6 +1,7 @@
 // api/provider/order
 
 import axiosApi from "@/lib/axiosInstance";
+import { IMealForm, IProviderProfile } from "@/types/form.Types";
 
 // get all orders of a provider
 export const fetchProviderOrders = async () => {
@@ -17,7 +18,7 @@ export const updateOrderStatus = async (id: string, status: string) => {
 
 // add meals
 
-export const addMealByProvider = async (data) => {
+export const addMealByProvider = async (data: IMealForm) => {
   const response = await axiosApi.post("/api/provider/meals", data);
 
   return response.data;
@@ -35,17 +36,17 @@ export const deleteMealByProvider = async (id: string) => {
 };
 
 // update a product
-export const updateMealByProvider = async (id: string, data) => {
+export const updateMealByProvider = async (id: string, data: IMealForm) => {
   const res = await axiosApi.put(`/api/provider/meals/${id}`, data);
   return res.data;
 };
 
 // create provider profile
-export const createProviderProfile = async (data) => {
+export const createProviderProfile = async (data: IProviderProfile) => {
   const res = await axiosApi.post("/api/provider/profile", data);
   return res.data;
 };
-export const updateProviderProfileData = async (data: any) => {
+export const updateProviderProfileData = async (data: IProviderProfile) => {
   const res = await axiosApi.put("/api/provider/profile", data);
   return res.data;
 };

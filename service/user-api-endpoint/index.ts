@@ -1,4 +1,5 @@
 import axiosApi from "@/lib/axiosInstance";
+import { IFormReviewData, IProfileUpdateForm } from "@/types/form.Types";
 
 // get all meals for user
 export const fetchMeal = async () => {
@@ -34,22 +35,17 @@ export const fetchAllOrderForUser = async () => {
   return response.data;
 };
 
-// place an order
-export const placeOrderByUser = async (data) => {
-  const res = await axiosApi.post(`/api/orders`, data);
-  console.log("response ", res.data);
-  return res.data;
-};
+// place an order order is default used
 // fetch order details
 export const fetchOrderDetailsByID = async (id: string) => {
   const res = await axiosApi.get(`/api/orders/${id}`);
   return res.data;
 };
-export const submitReview = async (payload) => {
+export const submitReview = async (payload: IFormReviewData) => {
   const res = await axiosApi.post("/api/reviews", payload);
   return res.data;
 };
-export const updateUserProfile = async (payload) => {
+export const updateUserProfile = async (payload: IProfileUpdateForm) => {
   const res = await axiosApi.patch("/api/profile-update", payload);
   return res.data;
 };

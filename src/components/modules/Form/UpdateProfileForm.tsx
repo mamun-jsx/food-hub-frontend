@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { updateUserProfile } from "../../../../service/user-api-endpoint";
+import { IProfileUpdateForm } from "@/types/form.Types";
 
 const UpdateProfileForm = () => {
   const [userName, setUserName] = useState("");
@@ -15,7 +16,7 @@ const UpdateProfileForm = () => {
     if (userImage) payload.image = userImage;
 
     try {
-      await updateUserProfile(payload);
+      await updateUserProfile(payload as IProfileUpdateForm);
       alert("Profile updated!");
     } catch (error) {
       console.log(error);

@@ -9,16 +9,52 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Star, Package, MapPin, Calendar } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
+import { IFormReviewData } from "@/types/form.Types";
+// ===============================
 
+export interface IMeal {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  providerId: string;
+  category: string;
+}
+
+export interface IOrderItem {
+  id: string;
+  orderId: string;
+  mealId: string;
+  quantity: number;
+  price: number;
+  meal: IMeal;
+}
+
+export interface IOrder {
+  id: string;
+  userId: string;
+  status: "DELIVERED" | "PENDING" | "CANCELLED"; // Union type for better safety
+  totalPrice: number;
+  address: string;
+  createdAt: string; // ISO Date string
+  items: IOrderItem[];
+}
+
+// ===============================
 export default function OrderDetails({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const [order, setOrder] = useState<any>(null);
+  const [order, setOrder] = useState<IOrder | null>(null);
   const [loading, setLoading] = useState(true);
-  const [reviewItem, setReviewItem] = useState<any>(null); // To track which item is being reviewed
-  const [reviewData, setReviewData] = useState({ rating: 5, comment: "" });
+    const [reviewItem, setReviewItem] = useState<IOrderItem | null>(null); 
+
+  const [reviewData, setReviewData] = useState<IFormReviewData>({
+    rating: 5,
+    comment: "",
+  });
 
   const userData = useAuth();
   const userId = userData?.data?.user?.id;
@@ -56,7 +92,7 @@ export default function OrderDetails({
 
   if (loading) return <div className="p-20 text-center">Loading Order...</div>;
   if (!order) return <div className="p-20 text-center">Order not found</div>;
-
+  console.log(order, " from single order page..");
   return (
     <div className="max-w-4xl mx-auto p-4 py-10">
       <div className="flex justify-between items-center mb-6">
@@ -104,7 +140,7 @@ export default function OrderDetails({
 
       <h2 className="text-lg font-bold mb-4">Items Ordered</h2>
       <div className="space-y-4">
-        {order.items.map((item: any) => (
+        {order.items.map((item: IOrderItem) => (
           <Card key={item.id}>
             <CardContent className="p-4 flex items-center justify-between">
               <div className="flex items-center gap-4">

@@ -18,15 +18,6 @@ export const fetchAllUsers = async () => {
   return response.json();
 };
 
-// get all orders
-
-// export const fetchAllOrders = async () => {
-    
-//   const response = await axiosApi.get("/api/admin/orders");
-//   return response.data;
-// };
-
-
 // update a user
 
 export const updateUserRole = async (id: string, role: string) => {

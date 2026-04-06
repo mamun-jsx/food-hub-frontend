@@ -7,8 +7,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  quantity: number;
+}
+
 export default function ViewCart() {
-  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [mounted, setMounted] = useState(false); // Prevents hydration mismatch
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [address, setAddress] = useState("");
@@ -16,7 +24,7 @@ export default function ViewCart() {
 
   const userData = useAuth();
   const userId = userData?.data?.user?.id;
-  
+
   // 1. Load cart only after component mounts in the browser
   useEffect(() => {
     setMounted(true);
@@ -30,7 +38,7 @@ export default function ViewCart() {
     }
   }, []);
 
-  const updateCart = (newCart: any[]) => {
+  const updateCart = (newCart: CartItem[]) => {
     setCartItems(newCart);
     localStorage.setItem("cartItems", JSON.stringify(newCart));
     window.dispatchEvent(new Event("cartUpdated"));

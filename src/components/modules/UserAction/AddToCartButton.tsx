@@ -2,15 +2,23 @@
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { IMeal } from "@/types/meal.Type";
-
+export interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  quantity: number;
+}
 export default function AddToCartButton({ meal }: { meal: IMeal }) {
   const handleAddToCart = () => {
     // 1. Get existing cart from localStorage
-    const existingCart = JSON.parse(localStorage.getItem("cartItems") || "[]");
+    const existingCart: CartItem[] = JSON.parse(
+      localStorage.getItem("cartItems") || "[]",
+    );
 
     // 2. Check if item already exists
     const existingItemIndex = existingCart.findIndex(
-      (item: any) => item.id === meal.id,
+      (item) => item.id === meal.id,
     );
 
     if (existingItemIndex > -1) {

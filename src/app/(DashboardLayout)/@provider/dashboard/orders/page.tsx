@@ -4,26 +4,46 @@ import {
   updateOrderStatus,
 } from "../../../../../../service/provider-apiEndPoint";
 import { useEffect, useState } from "react";
+export interface IMeal {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  providerId: string;
+  category: string;
+}
+
+export interface IOrderItem {
+  id: string;
+  orderId: string;
+  mealId: string;
+  quantity: number;
+  price: number;
+  meal: IMeal;
+}
 type Order = {
   id: string;
   status: "PLACED" | "PREPARING" | "READY" | "DELIVERED" | "CANCELLED";
   totalPrice: number;
   address: string;
-  items: any[];
+  items: IOrderItem[];
 };
-
+enum OrderStatus {
+  PLACED = "PLACED",
+  PREPARING = "PREPARING",
+  READY = "READY",
+  DELIVERED = "DELIVERED",
+  CANCELLED = "CANCELLED",
+}
 export default function ProviderViewOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-
   // ✅ FETCH DATA
   useEffect(() => {
     const loadData = async () => {
       try {
         const data = await fetchProviderOrders();
-
-      
-  
 
         setOrders(data.data); // IMPORTANT
       } catch (err) {
@@ -84,7 +104,7 @@ export default function ProviderViewOrders() {
                 <select
                   value={order.status}
                   onChange={(e) =>
-                    handleStatusChange(order.id, e.target.value as any)
+                    handleStatusChange(order.id, e.target.value as OrderStatus)
                   }
                   className="border px-2 py-1"
                 >
@@ -98,7 +118,7 @@ export default function ProviderViewOrders() {
 
               {/* ITEMS */}
               <td className="p-2 border">
-                {order.items.map((item: any) => (
+                {order.items.map((item: IOrderItem) => (
                   <div key={item.id}>
                     {item.meal.name} × {item.quantity}
                   </div>

@@ -1,9 +1,36 @@
 import React from "react";
 import { fetchAllOrdersServer } from "../../../../../../service/admin-apdpoint/server.apis";
+interface Meal {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  providerId: string;
+  category: string;
+}
+
+interface OrderItem {
+  id: string;
+  orderId: string;
+  mealId: string;
+  quantity: number;
+  price: number;
+  meal: Meal;
+}
+
+interface Order {
+  id: string;
+  userId: string;
+  status: string;
+  totalPrice: number;
+  address: string;
+  createdAt: string;
+  items: OrderItem[];
+}
 
 const AdminOrderView = async () => {
   const orderData = await fetchAllOrdersServer();
-
   const orders = orderData?.data || [];
 
   return (
@@ -25,7 +52,7 @@ const AdminOrderView = async () => {
           </thead>
 
           <tbody>
-            {orders.map((order: any) => (
+            {orders.map((order: Order) => (
               <tr key={order.id} className="border-t hover:bg-gray-50">
                 <td className="p-3 border">{order.id}</td>
                 <td className="p-3 border">{order.userId}</td>
@@ -40,7 +67,7 @@ const AdminOrderView = async () => {
                 {/* ITEMS */}
                 <td className="p-3 border">
                   <div className="space-y-2">
-                    {order.items.map((item: any) => (
+                    {order.items.map((item: OrderItem) => (
                       <div key={item.id} className="flex items-center gap-2">
                         <img
                           src={item.meal.image}

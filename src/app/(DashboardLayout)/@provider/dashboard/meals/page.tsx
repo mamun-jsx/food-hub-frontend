@@ -6,40 +6,44 @@ import {
   deleteMealByProvider,
   updateMealByProvider,
 } from "../../../../../../service/provider-apiEndPoint";
+import { IMealForm } from "@/types/form.Types";
 
 type Meal = {
   id: string;
   name: string;
-  image: string;
   price: number;
   description: string;
   category: string;
+  image: string;
 };
-
+enum categorys {
+  PASTA = "Pasta",
+  PIZZA = "Pizza",
+  BURGER = "Burger",
+  BIRYANI = "Biryani",
+}
 const categories = ["Pasta", "Pizza", "Burger", "Biryani"];
 
 const ProviderMealsView = () => {
-  const [meals, setMeals] = useState<Meal[]>([]);
+  const [meals, setMeals] = useState<Meal[]>([]); // Assuming the API returns an array
   const [loading, setLoading] = useState(true);
-
-  // edit state
   const [editMeal, setEditMeal] = useState<Meal | null>(null);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<IMealForm>({
     name: "",
-    category: "",
+    category: categorys.PASTA,
     price: 0,
     description: "",
+    image: "",
   });
 
-  // =========================
-  // LOAD / REFRESH MEALS
-  // =========================
   const loadMeals = async () => {
     try {
       setLoading(true);
       const data = await fetchProvidersMeal();
-      setMeals(data);
+      // If your API returns { meals: [...] }, use data.meals. Otherwise use data.
+      const mealsData = data?.meals || data || [];
+      setMeals(mealsData);
     } finally {
       setLoading(false);
     }
@@ -49,57 +53,50 @@ const ProviderMealsView = () => {
     loadMeals();
   }, []);
 
-  // =========================
-  // DELETE + REFRESH
-  // =========================
   const handleDelete = async (id: string) => {
+    if (!window.confirm("Are you sure?")) return;
     try {
       await deleteMealByProvider(id);
-      await loadMeals(); // 🔥 refetch after delete
+      await loadMeals();
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
-  // =========================
-  // OPEN EDIT MODAL
-  // =========================
   const openEdit = (meal: Meal) => {
     setEditMeal(meal);
     setFormData({
       name: meal.name,
-      category: meal.category,
+      // Cast the string from the API to your Enum type
+      category: meal.category as categorys,
       price: meal.price,
       description: meal.description,
+      image: meal.image,
+       // Ensure image is included if IMealForm requires it
     });
   };
 
-  // =========================
-  // INPUT CHANGE
-  // =========================
+  // FIXED: Handle Number conversion for Price and Select elements
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "price" ? Number(value) : value,
+    }));
   };
 
-  // =========================
-  // UPDATE + REFRESH (IMPORTANT)
-  // =========================
   const handleUpdate = async () => {
     if (!editMeal) return;
-
     try {
       await updateMealByProvider(editMeal.id, formData);
-
       setEditMeal(null);
-
-      await loadMeals(); // 🔥 MUST refetch after update
+      await loadMeals();
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -109,7 +106,6 @@ const ProviderMealsView = () => {
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4">Provider Meals</h2>
 
-      {/* ================= TABLE ================= */}
       <table className="w-full border border-gray-300">
         <thead>
           <tr className="bg-gray-100">
@@ -120,29 +116,30 @@ const ProviderMealsView = () => {
             <th className="p-2 border">Actions</th>
           </tr>
         </thead>
-
         <tbody>
-          {meals?.meals?.map((meal) => (
-            <tr key={meal.id}>
-              <td className="p-2 border">
-                <img src={meal.image} className="w-16 h-16 object-cover" />
+          {/* FIXED: meals is now typed as an array */}
+          {meals.map((meal) => (
+            <tr key={meal.id} className="text-center">
+              <td className="p-2 border flex justify-center">
+                <img
+                  src={meal.image}
+                  alt={meal.name}
+                  className="w-16 h-16 object-cover"
+                />
               </td>
-
               <td className="p-2 border">{meal.name}</td>
               <td className="p-2 border">{meal.category}</td>
-              <td className="p-2 border">{meal.price}</td>
-
+              <td className="p-2 border">{meal.price} TK</td>
               <td className="p-2 border space-x-2">
                 <button
                   onClick={() => openEdit(meal)}
-                  className="px-2 py-1 bg-blue-500 text-white"
+                  className="px-2 py-1 bg-blue-500 text-white rounded"
                 >
                   Update
                 </button>
-
                 <button
                   onClick={() => handleDelete(meal.id)}
-                  className="px-2 py-1 bg-red-500 text-white"
+                  className="px-2 py-1 bg-red-500 text-white rounded"
                 >
                   Delete
                 </button>
@@ -152,27 +149,27 @@ const ProviderMealsView = () => {
         </tbody>
       </table>
 
-      {/* ================= EDIT MODAL ================= */}
       {editMeal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-          <div className="bg-white p-5 w-[420px] rounded">
-            <h2 className="text-lg font-bold mb-3">Update Meal</h2>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 w-[420px] rounded-lg shadow-xl">
+            <h2 className="text-lg font-bold mb-4">Update Meal</h2>
 
+            <label className="block text-sm font-medium mb-1">Name</label>
             <input
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="border p-2 w-full mb-2"
-              placeholder="Name"
+              className="border p-2 w-full mb-3"
             />
 
-            {/* CATEGORY */}
+            <label className="block text-sm font-medium mb-1">Category</label>
             <select
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className="border p-2 w-full mb-2"
+              className="border p-2 w-full mb-3"
             >
+              <option value="">Select Category</option>
               {categories.map((cat) => (
                 <option key={cat} value={cat}>
                   {cat}
@@ -180,37 +177,38 @@ const ProviderMealsView = () => {
               ))}
             </select>
 
+            <label className="block text-sm font-medium mb-1">Price</label>
             <input
               name="price"
               type="number"
               value={formData.price}
               onChange={handleChange}
-              className="border p-2 w-full mb-2"
-              placeholder="Price"
+              className="border p-2 w-full mb-3"
             />
 
+            <label className="block text-sm font-medium mb-1">
+              Description
+            </label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="border p-2 w-full mb-2"
-              placeholder="Description"
+              className="border p-2 w-full mb-4"
+              rows={3}
             />
 
-            {/* ACTIONS */}
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setEditMeal(null)}
-                className="px-3 py-1 bg-gray-400 text-white"
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded"
               >
                 Cancel
               </button>
-
               <button
                 onClick={handleUpdate}
-                className="px-3 py-1 bg-green-500 text-white"
+                className="px-4 py-2 bg-green-600 text-white rounded"
               >
-                Save
+                Save Changes
               </button>
             </div>
           </div>
