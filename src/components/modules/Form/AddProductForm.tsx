@@ -6,65 +6,68 @@ import { Textarea } from "@/components/ui/textarea";
 import React, { useState } from "react";
 
 import { addMealByProvider } from "../../../../service/provider-apiEndPoint";
+import { IMealForm, categorys } from "@/types/form.Types";
 
 export function AddProductForm() {
-  const [form, setForm] = useState({
+  const initialState: IMealForm = {
     name: "",
-    category: "Pasta",
+    category: categorys.PASTA,
     description: "",
-    price: "",
+    price: 0,
     image: "",
-  });
+  };
+
+  const [form, setForm] = useState<IMealForm>(initialState);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    setForm({
+      ...form,
+      [name]: name === "price" ? Number(value) : value,
+    });
   };
 
-  const handleSubmit = async (e) => {
+  const resetForm = () => {
+    setForm(initialState);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const payload = {
-      name: form.name,
-      description: form.description,
+      name: form.name.trim(),
+      description: form.description.trim(),
       category: form.category,
       price: Number(form.price),
-      image: form.image || undefined,
+      image: form.image?.trim() || undefined,
     };
 
-    console.log("PAYLOAD:", payload);
-
-    if (
-      !payload.name ||
-      !payload.description ||
-      !payload.category ||
-      !payload.price
-    ) {
-      alert("Fill all required fields");
+    // validation
+    if (!payload.name || !payload.description || !payload.price) {
+      alert("Please fill all required fields");
       return;
     }
 
-    if (isNaN(payload.price)) {
-      alert("Invalid price");
+    if (isNaN(payload.price) || payload.price <= 0) {
+      alert("Price must be a valid positive number");
       return;
     }
 
     try {
       const res = await addMealByProvider(payload);
-      console.log("SUCCESS:", res);
-      if (res.success) {
-        setForm({
-          name: "",
-          category: "Pasta",
-          description: "",
-          price: "",
-          image: "",
-        });
-        alert("Data is saved")
+
+      if (res?.success) {
+        alert("Data is saved ✅");
+        resetForm(); // clear form after success
+      } else {
+        alert("Failed to save data");
       }
-    } catch (err) {
-      console.log("ERROR RESPONSE:", err.response?.data);
+    } catch (err: any) {
+      console.log("ERROR:", err?.response?.data || err.message);
+      alert("Something went wrong");
     }
   };
 
@@ -87,15 +90,16 @@ export function AddProductForm() {
         <select
           name="category"
           value={form.category}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
+          onChange={(e) =>
+            setForm({ ...form, category: e.target.value as categorys })
+          }
           className="w-full border p-2 rounded"
         >
-          <option value="Pasta">Pasta</option>
-          <option value="Pizza">Pizza</option>
-          <option value="Burger">Burger</option>
-          <option value="Chawmin">Chawmin</option>
-          <option value="Local Food">Local Food</option>
-          <option value="Biryani">Biryani</option>
+          {Object.values(categorys).map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
         </select>
       </Field>
 
@@ -129,7 +133,10 @@ export function AddProductForm() {
       </Field>
 
       {/* SUBMIT */}
-      <Button type="submit" className="w-full">
+      <Button
+        type="submit"
+        className="w-full hover:bg-green-600 cursor-pointer"
+      >
         Add Meal
       </Button>
     </form>

@@ -6,16 +6,18 @@ export default async function ProductPage({
 }: {
   searchParams: Promise<{ category?: string; search?: string }>;
 }) {
-  // ✅ FIX: await searchParams
+  // ✅ REQUIRED in Next 15+
   const params = await searchParams;
 
   const category = params.category || "";
   const search = params.search || "";
 
-  const query = new URLSearchParams({
-    category,
-    search,
-  });
+  const query = new URLSearchParams();
+
+  if (category) query.set("category", category);
+  if (search) query.set("search", search);
+
+  console.log(query.toString(), "✅ query string");
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/meals?${query.toString()}`,

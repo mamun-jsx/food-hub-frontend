@@ -1,4 +1,4 @@
-enum categorys {
+export enum categorys {
   PASTA = "Pasta",
   PIZZA = "Pizza",
   BURGER = "Burger",
