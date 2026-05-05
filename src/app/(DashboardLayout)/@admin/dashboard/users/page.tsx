@@ -9,7 +9,7 @@ export interface IUser {
   email: string;
   emailVerified: boolean;
   image: string;
-  role: "ADMIN" | "PROVIDER" | "CUSTOMER";
+  role: "ADMIN" | "PROVIDER" | "USER";
   createdAt: string;
   updatedAt: string;
 }

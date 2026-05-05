@@ -1,47 +1,52 @@
 "use client";
 import DashboardSidebar from "@/components/modules/DashboardComponent/DashboardSidebar";
 import { useAuth } from "@/hooks/useAuth";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function DashboardLayout({
   admin,
-  customer,
+  user,
   provider,
 }: {
   admin: React.ReactNode;
-  customer: React.ReactNode;
+  user: React.ReactNode;
   provider: React.ReactNode;
 }) {
   const { data: session, isPending } = useAuth();
 
-  console.log("Dashboard Session:", session); // Debug
-  console.log("Role:", session?.user?.role); // Debug
-
-  if (isPending) return <p>Loading...</p>;
+  if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
   if (!session) {
-    return <p>Unauthorized - No session found</p>;
+    return <div className="flex h-screen items-center justify-center">Unauthorized - No session found</div>;
   }
 
   const role = session?.user?.role;
+  console.log("Dashboard Session User:", session?.user);
 
-  // Debug: show what we have
   if (!role) {
     return (
-      <div>
+      <div className="flex h-screen flex-col items-center justify-center">
         <p>Error: User role not found</p>
-        <p>Session Data: {JSON.stringify(session)}</p>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen">
+    <SidebarProvider>
       <DashboardSidebar />
-
-      <main className="flex-1 ml-10 md:ml-6 mt-5">
-        {role === "ADMIN" && admin}
-        {role === "PROVIDER" && provider}
-        {role === "CUSTOMER" && customer}
-      </main>
-    </div>
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+          <SidebarTrigger className="-ml-1" />
+          <div className="h-4 w-[1px] bg-gray-200 mx-2" />
+          <h1 className="text-sm font-medium text-gray-500 capitalize">
+            {role.toLowerCase()} Dashboard
+          </h1>
+        </header>
+        <main className="flex-1 p-6 overflow-y-auto bg-gray-50/30">
+          {role?.toUpperCase() === "ADMIN" && admin}
+          {role?.toUpperCase() === "PROVIDER" && provider}
+          {role?.toUpperCase() === "USER" && user}
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

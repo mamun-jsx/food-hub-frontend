@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
@@ -34,11 +35,12 @@ export default function DinnerPlan() {
               reservation system.
             </p>
             <div className="pt-4">
-              <Button className="bg-primary cursor-pointer hover:bg-primary-hover text-white font-bold text-lg px-12 cursor-pointer py-8 rounded-full shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-3">
-                <span></span>
-                View Our Meals
-                <ArrowRight className="w-6 h-6" />
-              </Button>
+              <Link href="/meals">
+                <Button className="bg-primary cursor-pointer hover:bg-primary-hover text-white font-bold text-lg px-12 cursor-pointer py-8 rounded-full shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-3">
+                  View Our Meals
+                  <ArrowRight className="w-6 h-6" />
+                </Button>
+              </Link>
             </div>
 
             {/* Social Proof */}

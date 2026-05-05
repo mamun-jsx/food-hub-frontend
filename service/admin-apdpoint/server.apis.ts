@@ -1,25 +1,28 @@
 import { cookies } from "next/headers";
 
 export const fetchAllOrdersServer = async () => {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
+  const token = cookieStore.get("accessToken")?.value;
 
-  const cookieHeader = (await cookieStore)
-    .getAll()
-    .map((c) => `${c.name}=${c.value}`)
-    .join("; ");
+  if (!token) {
+    throw new Error("Unauthorized: No session token found");
+  }
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/orders`,
     {
       headers: {
-        Cookie: cookieHeader,
+        Authorization: `Bearer ${token}`,
       },
       cache: "no-store",
     },
   );
 
   if (!res.ok) {
-    throw new Error("Unauthorized");
+    if (res.status === 401 || res.status === 403) {
+      throw new Error("Unauthorized: Admin access required");
+    }
+    throw new Error(`Failed to fetch: ${res.status}`);
   }
 
   return res.json();

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X, ShoppingCart } from "lucide-react";
+import Image from "next/image";
+import logo from "@/assets/food-hub.png";
 import { logoutUser } from "../../../service/auth/authService";
 import { useRouter } from "next/navigation";
 import LoadingBtn from "./LoadingBtn";
@@ -27,11 +29,17 @@ import { cn } from "@/lib/utils";
 export default function Navbar() {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const { data: session, isPending } = useAuth();
-  const { cartItems } = useCart();
+  const { data: session } = useAuth();
+  const { cartItems, clearCart } = useCart();
+
+  if (session) {
+    console.log("Navbar: Current User Session:", session);
+  }
 
   const logOutFnc = async () => {
     await logoutUser();
+    clearCart(); // Clear cart on logout
+    window.dispatchEvent(new Event("auth-change"));
     router.push("/login");
     router.refresh();
   };
@@ -58,47 +66,53 @@ export default function Navbar() {
       <div className="container mx-auto px-4 py-4">
         {/* Desktop Menu */}
         <nav className="hidden items-center justify-between lg:flex">
-          <div className="flex items-center gap-6">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-primary tracking-tighter">
-                FoodHub
-              </span>
+          <div className="flex-shrink-0">
+            <Link href="/" className="flex items-center">
+              <Image 
+                src={logo} 
+                alt="FoodHub Logo" 
+                width={140} 
+                height={45} 
+                className="w-auto h-12 md:h-14 object-contain" 
+                priority
+              />
             </Link>
-
-            <div className="flex items-center">
-              <NavigationMenu>
-                <NavigationMenuList className="gap-2">
-                  {menu.map((item) => (
-                    <NavigationMenuItem key={item.title}>
-                      <NavigationMenuLink
-                        asChild
-                        className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
-                      >
-                        <Link href={item.url}>{item.title}</Link>
-                      </NavigationMenuLink>
-                    </NavigationMenuItem>
-                  ))}
-                </NavigationMenuList>
-              </NavigationMenu>
-
-              <select
-                value={selectedCategory}
-                onChange={(e) => handleCategoryChange(e.target.value)}
-                className="border px-3 py-2 rounded-lg ml-4 text-sm"
-              >
-                <option value="all">All</option>
-                <option value="pasta">Pasta</option>
-                <option value="pizza">Pizza</option>
-                <option value="burger">Burger</option>
-                <option value="chawmin">Chawmin</option>
-                <option value="local food">Local Food</option>
-                <option value="biryani">Biryani</option>
-              </select>
-            </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          {/* Centered Menu */}
+          <div className="flex-1 flex justify-center items-center">
+            <NavigationMenu>
+              <NavigationMenuList className="gap-2">
+                {menu.map((item) => (
+                  <NavigationMenuItem key={item.title}>
+                    <NavigationMenuLink
+                      asChild
+                      className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
+                    >
+                      <Link href={item.url}>{item.title}</Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
+
+            <select
+              value={selectedCategory}
+              onChange={(e) => handleCategoryChange(e.target.value)}
+              className="border px-3 py-2 rounded-lg ml-4 text-sm bg-transparent border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+            >
+              <option value="all">All Categories</option>
+              <option value="pasta">Pasta</option>
+              <option value="pizza">Pizza</option>
+              <option value="burger">Burger</option>
+              <option value="chawmin">Chawmin</option>
+              <option value="local food">Local Food</option>
+              <option value="biryani">Biryani</option>
+            </select>
+          </div>
+
+          {/* Right Actions */}
+          <div className="flex items-center gap-4 flex-shrink-0">
             {/* Cart */}
             <Link href="/dashboard/view-cart" className="flex items-center gap-2">
               <Button variant="outline" size="icon" className="relative rounded-full">
@@ -112,9 +126,7 @@ export default function Navbar() {
             </Link>
 
             {/* Auth */}
-            {isPending ? (
-              <LoadingBtn />
-            ) : session ? (
+            {session ? (
               <div className="flex items-center gap-2">
                 <Button asChild variant="outline" size="sm">
                   <Link href="/dashboard">Dashboard</Link>
@@ -203,9 +215,7 @@ export default function Navbar() {
                     </div>
 
                     <div className="flex flex-col gap-3 mt-4 pt-4 border-t">
-                      {isPending ? (
-                        <LoadingBtn />
-                      ) : session ? (
+                      {session ? (
                         <>
                           <Button asChild variant="outline" className="w-full justify-start">
                             <Link href="/dashboard">Dashboard</Link>

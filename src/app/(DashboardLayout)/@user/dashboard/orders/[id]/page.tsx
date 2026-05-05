@@ -11,6 +11,7 @@ import { Star, Package, MapPin, Calendar } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
 import { IFormReviewData } from "@/types/form.Types";
+import Loader from "@/components/shared/Loader";
 // ===============================
 
 export interface IMeal {
@@ -91,15 +92,25 @@ export default function OrderDetails({
     }
   };
 
-  if (loading) return <div className="p-20 text-center">Loading Order...</div>;
-  if (!order) return <div className="p-20 text-center">Order not found</div>;
+  if (loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  if (!order)
+    return (
+      <div className="p-20 text-center text-gray-500 font-bold">
+        Order not found
+      </div>
+    );
   console.log(order, " from single order page..");
   return (
     <div className="max-w-4xl mx-auto p-4 py-10">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Order Details</h1>
         <span
-          className={`px-3 py-1 rounded-full text-xs font-bold ${order.status === "DELIVERED" ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"}`}
+          className={`px-3 py-1 rounded-full text-xs font-bold ${order.status === "DELIVERED" ? "bg-primary/20 text-primary" : "bg-blue-100 text-blue-700"}`}
         >
           {order.status}
         </span>
@@ -227,7 +238,7 @@ export default function OrderDetails({
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" className="flex-1 bg-green-600">
+                  <Button type="submit" className="flex-1 bg-primary hover:bg-primary-hover">
                     Submit Review
                   </Button>
                 </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   ShoppingBasket,
@@ -65,7 +66,7 @@ export default function Staff() {
             />
           </div>
 
-          <div className="absolute bottom-[10%] left-[0%] w-1/5 h-1/5 rounded-full overflow-hidden border-4 border-white shadow-lg z-20 bg-green-100 flex items-center justify-center">
+          <div className="absolute bottom-[10%] left-[0%] w-1/5 h-1/5 rounded-full overflow-hidden border-4 border-white shadow-lg z-20 bg-primary/10 flex items-center justify-center">
             <Image
               src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&auto=format&fit=crop&q=60"
               alt="Fresh Greens"
@@ -115,9 +116,11 @@ export default function Staff() {
           </div>
 
           <div className="pt-4">
-            <Button className="bg-primary cursor-pointer hover:bg-primary-hover text-white px-10 py-7 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-              About Us
-            </Button>
+            <Link href="/about">
+              <Button className="bg-primary cursor-pointer hover:bg-primary-hover text-white px-10 py-7 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                About Us
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

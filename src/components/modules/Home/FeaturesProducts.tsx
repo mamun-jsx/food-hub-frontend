@@ -15,10 +15,15 @@ import { IMeal } from "@/types/meal.Type";
 import { Clock, Navigation } from "lucide-react";
 
 import { useCart } from "@/context/CartContext";
+import Loader from "@/components/shared/Loader";
+import { useAuth } from "@/hooks/useAuth";
+import toast from "react-hot-toast";
 
 export default function FeaturesProducts() {
   const router = useRouter();
   const { addToCart } = useCart();
+  const { data: session } = useAuth();
+  const userRole = session?.user?.role;
   const [products, setProducts] = useState<IMeal[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,7 +52,7 @@ export default function FeaturesProducts() {
   if (loading) {
     return (
       <section className="py-24 bg-[#fbf9f5] flex justify-center items-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        <Loader />
       </section>
     );
   }
@@ -150,22 +155,25 @@ export default function FeaturesProducts() {
                       <span className="text-xl font-bold text-gray-900">
                         {item.price.toFixed(2)} TK
                       </span>
-                      <Button
-                        variant="outline"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          addToCart({
-                            id: item.id,
-                            name: item.name,
-                            price: item.price,
-                            image: item.image,
-                            quantity: 1,
-                          });
-                        }}
-                        className="rounded-full border cursor-pointer border-primary text-xs font-semibold text-gray-900 hover:bg-primary hover:text-white transition-colors h-9 px-4"
-                      >
-                        Add To Cart
-                      </Button>
+                      {userRole !== "ADMIN" && userRole !== "PROVIDER" && (
+                        <Button
+                          variant="outline"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            addToCart({
+                              id: item.id,
+                              name: item.name,
+                              price: item.price,
+                              image: item.image,
+                              quantity: 1,
+                            });
+                            toast.success(`${item.name} added to cart!`);
+                          }}
+                          className="rounded-full border cursor-pointer border-primary text-xs font-semibold text-gray-900 hover:bg-primary hover:text-white transition-colors h-9 px-4"
+                        >
+                          Add To Cart
+                        </Button>
+                      )}
                     </div>
                   </article>
                 </CarouselItem>

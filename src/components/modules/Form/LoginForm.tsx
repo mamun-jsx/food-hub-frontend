@@ -38,6 +38,8 @@ export function LoginForm() {
         toast.error(result.message || "Login failed", { id: toastId });
       } else {
         toast.success("Login successful!", { id: toastId });
+        console.log("Login Success Result:", result);
+        window.dispatchEvent(new Event("auth-change"));
         router.push("/");
         router.refresh();
       }

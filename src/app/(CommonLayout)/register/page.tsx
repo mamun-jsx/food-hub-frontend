@@ -3,7 +3,10 @@ import { RegisterForm } from "@/components/modules/Form/RegisterForm";
 
 const RegisterPage = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#FFFCF7] px-4 relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full -mr-32 -mt-32 blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 rounded-full -ml-32 -mb-32 blur-3xl" />
       {/* Card Container */}
       <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-10">
         {/* Title */}

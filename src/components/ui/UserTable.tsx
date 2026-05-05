@@ -10,7 +10,7 @@ export interface IUser {
   email: string;
   emailVerified: boolean;
   image: string;
-  role: "ADMIN" | "PROVIDER" | "CUSTOMER";
+  role: "ADMIN" | "PROVIDER" | "USER";
   createdAt: string;
   updatedAt: string;
 }
@@ -26,7 +26,7 @@ const UserTable = ({ users: initialUsers }: Props) => {
     await updateUserRole(id, role);
     toast.success("Role updated successfully");
     setUsers((prev) =>
-      prev.map((user) => (user.id === id ? { ...user, role: role as "ADMIN" | "PROVIDER" | "CUSTOMER" } : user)),
+      prev.map((user) => (user.id === id ? { ...user, role: role as "ADMIN" | "PROVIDER" | "USER" } : user)),
     );
   };
   return (
@@ -69,7 +69,7 @@ const UserTable = ({ users: initialUsers }: Props) => {
                       ? "bg-red-100 text-red-600"
                       : user.role === "PROVIDER"
                         ? "bg-blue-100 text-blue-600"
-                        : "bg-green-100 text-green-600"
+                        : "bg-primary/10 text-primary"
                   }`}
                 >
                   {user.role}
@@ -81,7 +81,7 @@ const UserTable = ({ users: initialUsers }: Props) => {
                   onChange={(e) => handleUserRole(user.id, e.target.value)}
                   className="border px-2 py-1"
                 >
-                  <option value="CUSTOMER">Customer</option>
+                  <option value="USER">User</option>
                   <option value="PROVIDER">Provider</option>
                   <option value="ADMIN">Admin</option>
                 </select>

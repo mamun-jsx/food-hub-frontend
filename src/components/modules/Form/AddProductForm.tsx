@@ -169,7 +169,7 @@ export function AddProductForm() {
       {/* SUBMIT */}
       <Button
         type="submit"
-        className="w-full hover:bg-green-600 cursor-pointer"
+        className="w-full hover:bg-primary-hover cursor-pointer"
       >
         Add Meal
       </Button>

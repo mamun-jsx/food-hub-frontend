@@ -37,14 +37,20 @@ export const fetchAllOrderForUser = async () => {
   return response.data;
 };
 
+// get a single order details
+export const fetchOrderDetailsByID = async (id: string) => {
+  const response = await axiosApi.get(`/api/orders/${id}`);
+  return response.data;
+};
+
 // place order
 export const placeOrder = async (orderData: any) => {
   const response = await axiosApi.post("/api/orders", orderData);
   return response.data;
 };
 
-// create review
-export const createReview = async (reviewData: IFormReviewData) => {
+// submit review
+export const submitReview = async (reviewData: any) => {
   const response = await axiosApi.post("/api/reviews", reviewData);
   return response.data;
 };
