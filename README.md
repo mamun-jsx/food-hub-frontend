@@ -2,6 +2,13 @@
 
 A premium, artisanal web application for food discovery and ordering. FoodHub connects culinary enthusiasts with local providers through a state-of-the-art, responsive interface.
 
+## 🔗 Quick Links
+
+- **Live Site**: [https://food-hub-frontend-tan.vercel.app](https://food-hub-frontend-tan.vercel.app)
+- **Backend API**: [https://food-hub-backend-pg-ts.vercel.app](https://food-hub-backend-pg-ts.vercel.app)
+- **Backend Repository**: [https://github.com/mamun-jsx/food-hub-backend-pg-ts](https://github.com/mamun-jsx/food-hub-backend-pg-ts)
+
+
 ## ✨ Premium Features
 
 - **Artisanal Design**: A warm, high-end aesthetic built with the "Artisan" theme (`#FFFCF7` and `#F3BC58`).
