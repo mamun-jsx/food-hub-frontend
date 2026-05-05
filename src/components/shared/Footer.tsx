@@ -5,8 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/food-hub.png";
 import { Facebook, Instagram, Linkedin, Send } from "lucide-react";
+import toast from "react-hot-toast";
 
 const Footer = () => {
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast.success("Thank you for subscribing! 💌");
+  };
+
   return (
     <footer className="bg-gray-900 text-gray-300 pt-20 pb-10">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
@@ -14,7 +20,13 @@ const Footer = () => {
         {/* Left Section: Logo & Paragraph */}
         <div className="space-y-6">
           <Link href="/" className="inline-block">
-            <Image src={logo} alt="FoodHub Logo" width={150} height={50} className="brightness-0 invert" />
+            <Image 
+                src={logo} 
+                alt="FoodHub Logo" 
+                width={140} 
+                height={45} 
+                className="w-auto h-12 object-contain brightness-0 invert" 
+            />
           </Link>
           <p className="text-sm leading-relaxed text-gray-400">
             Bringing the finest culinary experiences straight to your doorstep. We partner with the best local chefs to ensure quality, taste, and speed in every delivery.
@@ -61,16 +73,17 @@ const Footer = () => {
 
           <div className="max-w-md">
             <h3 className="text-white font-black uppercase tracking-widest text-xs mb-6">Stay Updated</h3>
-            <div className="relative group">
+            <form onSubmit={handleSubscribe} className="relative group">
               <input 
+                required
                 type="email" 
                 placeholder="Enter your email" 
                 className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-6 pr-14 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all group-hover:border-white/20"
               />
-              <button className="absolute right-2 top-2 bottom-2 bg-primary hover:bg-primary-hover text-white px-4 rounded-xl transition-all shadow-lg shadow-primary/20">
+              <button type="submit" className="absolute right-2 top-2 bottom-2 bg-primary hover:bg-primary-hover text-white px-4 rounded-xl transition-all shadow-lg shadow-primary/20">
                 <Send size={18} />
               </button>
-            </div>
+            </form>
             <p className="text-[10px] text-gray-500 mt-3 ml-2 italic">Subscribe for weekly recipes and exclusive discounts.</p>
           </div>
         </div>
