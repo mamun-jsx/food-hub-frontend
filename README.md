@@ -1,64 +1,69 @@
-# 🍽️ Food Hub Frontend (Next.js)
+# FoodHub Frontend 🍽️
 
-This is the frontend of the **Food Hub Multi-Vendor System**, built with Next.js App Router. It provides a responsive UI for customers, providers, and admins to interact with the food ordering platform.
+A premium, artisanal web application for food discovery and ordering. FoodHub connects culinary enthusiasts with local providers through a state-of-the-art, responsive interface.
 
-The application supports role-based dashboards, dynamic routing, API proxying, and a modern UI built using ShadCN components.
+## ✨ Premium Features
 
----
+- **Artisanal Design**: A warm, high-end aesthetic built with the "Artisan" theme (`#FFFCF7` and `#F3BC58`).
+- **Triple-Role Dashboards**:
+  - **User**: Order history, live tracking, and profile management.
+  - **Provider**: Product management (Add/Update/Delete), order processing, and restaurant profiling.
+  - **Admin**: Global platform statistics, user management, and order monitoring.
+- **Dynamic Cart System**: Seamless cart management with persistent local state.
+- **Robust Searching**: Filter meals by category or search by keywords with instant results.
+- **Provider Identity**: Dedicated public profiles for restaurants showcasing their unique menu and story.
 
-## 🚀 Features
+## 🚀 Technologies
 
-This frontend allows users to browse food items, filter by category, view provider-specific menus, and place orders.
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **State Management**: React Context API (Cart) & Custom Hooks (Auth)
+- **UI Components**: Shadcn/UI & Lucide React
+- **Notifications**: React Hot Toast
+- **API Client**: Axios with interceptors
 
-It supports three different roles:
+## 🛠️ Setup Instructions
 
-- 👤 Customer: Browse meals, place orders, leave reviews after delivery
-- 🏪 Provider: Manage meals, view orders, handle customer requests
-- 🛠️ Admin: Manage users, assign provider roles, and control the system
+### 1. Prerequisites
+- Node.js (v18+)
+- Pnpm (recommended) or Npm
 
-The UI is fully responsive and optimized for mobile, tablet, and desktop devices.
-
----
-
-## 🧭 Dashboard System
-
-The application uses role-based dashboard routing:
-
-- `/dashboard/admin` → Admin dashboard layout
-- `/dashboard/provider` → Provider dashboard layout
-- `/dashboard/customer` → Customer dashboard layout
-
-All dashboards share a common layout system with role-specific UI components and navigation.
-
----
-
-## 🎨 UI & Styling
-
-- Built with **ShadCN UI components**
-- Fully responsive design using Tailwind CSS
-- Clean and modern dashboard UI
-- Reusable component system
-
----
-
-## 🔌 API Proxy System
-
-The frontend communicates with the backend using a proxy setup to handle API requests securely.
-
-Example:Environment variable:
-```env id="proxy-env"
-NEXT_PUBLIC_BACKEND_URL=http://localhost:5000
-
-
-git clone https://github.com/mamun-jsx/food-hub-frontend.git
-cd food-hub-frontend 
+### 2. Installation
+```bash
 pnpm install
+```
+
+### 3. Environment Variables
+Create a `.env.local` file in the root directory:
+```env
+NEXT_PUBLIC_BACKEND_URL="http://localhost:4000"
+```
+
+### 4. Running the Application
+```bash
 pnpm dev
+```
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
+## 📁 Project Structure
 
+- `src/app`: Next.js App Router pages and layouts.
+- `src/components`:
+  - `modules`: Feature-specific components (Forms, Dashboard modules).
+  - `shared`: Reusable global components (Navbar, Footer, MealCard).
+  - `ui`: Base UI components (Shadcn).
+- `src/context`: Global state providers.
+- `src/hooks`: Custom React hooks for Auth and utility.
+- `service/`: API endpoint definitions and service layer.
 
+## 🎨 Design System
 
+FoodHub uses a curated color palette to evoke warmth and quality:
+- **Primary**: `#F3BC58` (Golden Harvest)
+- **Hover**: `#D9901C` (Deep Honey)
+- **Background**: `#FFFCF7` (Creamy Parchment)
+- **Dark Elements**: `#111827` (Rich Obsidian)
 
-- Backend must be running before frontend
-- Ensure `.env` is configured correctly
-- All API calls depend on backend URL proxy
+---
+Developed by **[Abdullah Al Mamun](https://github.com/mamun-jsx)**

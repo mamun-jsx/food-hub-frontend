@@ -1,7 +1,6 @@
 "use client";
-
 import React from "react";
-import Image from "next/image";
+
 import Link from "next/link";
 import footerLogo from "@/assets/footerImage.png";
 import { Facebook, Instagram, Linkedin, Send } from "lucide-react";
