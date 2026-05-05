@@ -15,6 +15,8 @@ type Meal = {
   description: string;
   category: string;
   image: string;
+  cookingTime?: number;
+  deliveryTime?: number;
 };
 enum categorys {
   PASTA = "Pasta",
@@ -35,6 +37,8 @@ const ProviderMealsView = () => {
     price: 0,
     description: "",
     image: "",
+    cookingTime: 0,
+    deliveryTime: 0,
   });
 
   const loadMeals = async () => {
@@ -72,7 +76,8 @@ const ProviderMealsView = () => {
       price: meal.price,
       description: meal.description,
       image: meal.image,
-       // Ensure image is included if IMealForm requires it
+      cookingTime: meal.cookingTime || 0,
+      deliveryTime: meal.deliveryTime || 0,
     });
   };
 
@@ -85,7 +90,10 @@ const ProviderMealsView = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "price" ? Number(value) : value,
+      [name]:
+        name === "price" || name === "cookingTime" || name === "deliveryTime"
+          ? Number(value)
+          : value,
     }));
   };
 
@@ -112,6 +120,8 @@ const ProviderMealsView = () => {
             <th className="p-2 border">Image</th>
             <th className="p-2 border">Name</th>
             <th className="p-2 border">Category</th>
+            <th className="p-2 border">Cooking</th>
+            <th className="p-2 border">Delivery</th>
             <th className="p-2 border">Price</th>
             <th className="p-2 border">Actions</th>
           </tr>
@@ -129,6 +139,8 @@ const ProviderMealsView = () => {
               </td>
               <td className="p-2 border">{meal.name}</td>
               <td className="p-2 border">{meal.category}</td>
+              <td className="p-2 border">{meal.cookingTime} min</td>
+              <td className="p-2 border">{meal.deliveryTime} min</td>
               <td className="p-2 border">{meal.price} TK</td>
               <td className="p-2 border space-x-2">
                 <button
@@ -193,9 +205,36 @@ const ProviderMealsView = () => {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="border p-2 w-full mb-4"
+              className="border p-2 w-full mb-3"
               rows={3}
             />
+
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Cooking Time (Min)
+                </label>
+                <input
+                  name="cookingTime"
+                  type="number"
+                  value={formData.cookingTime}
+                  onChange={handleChange}
+                  className="border p-2 w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Delivery Time (Min)
+                </label>
+                <input
+                  name="deliveryTime"
+                  type="number"
+                  value={formData.deliveryTime}
+                  onChange={handleChange}
+                  className="border p-2 w-full"
+                />
+              </div>
+            </div>
 
             <div className="flex justify-end gap-2">
               <button

@@ -1,8 +1,10 @@
 export enum categorys {
-  PASTA = "Pasta",
-  PIZZA = "Pizza",
-  BURGER = "Burger",
-  BIRYANI = "Biryani",
+  PASTA = "pasta",
+  PIZZA = "pizza",
+  BURGER = "burger",
+  BIRYANI = "biryani",
+  CHAWMIN = "chawmin",
+  LOCAL_FOOD = "local food",
 }
 export interface IMealForm {
   name: string;
@@ -10,6 +12,8 @@ export interface IMealForm {
   description: string;
   price: number;
   image?: string;
+  cookingTime?: number;
+  deliveryTime?: number;
 }
 
 export interface IProviderProfile {

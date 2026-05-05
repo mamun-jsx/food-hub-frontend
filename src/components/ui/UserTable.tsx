@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { updateUserRole } from "../../../service/admin-apdpoint";
 
 export interface IUser {
@@ -23,7 +24,7 @@ const UserTable = ({ users: initialUsers }: Props) => {
 
   const handleUserRole = async (id: string, role: string) => {
     await updateUserRole(id, role);
-    alert("Role updated successfully");
+    toast.success("Role updated successfully");
     setUsers((prev) =>
       prev.map((user) => (user.id === id ? { ...user, role: role as "ADMIN" | "PROVIDER" | "CUSTOMER" } : user)),
     );

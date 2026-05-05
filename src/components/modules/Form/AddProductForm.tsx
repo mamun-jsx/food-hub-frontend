@@ -4,6 +4,7 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 import { addMealByProvider } from "../../../../service/provider-apiEndPoint";
 import { IMealForm, categorys } from "@/types/form.Types";
@@ -15,6 +16,8 @@ export function AddProductForm() {
     description: "",
     price: 0,
     image: "",
+    cookingTime: 0,
+    deliveryTime: 0,
   };
 
   const [form, setForm] = useState<IMealForm>(initialState);
@@ -26,7 +29,10 @@ export function AddProductForm() {
 
     setForm({
       ...form,
-      [name]: name === "price" ? Number(value) : value,
+      [name]:
+        name === "price" || name === "cookingTime" || name === "deliveryTime"
+          ? Number(value)
+          : value,
     });
   };
 
@@ -43,16 +49,18 @@ export function AddProductForm() {
       category: form.category,
       price: Number(form.price),
       image: form.image?.trim() || undefined,
+      cookingTime: Number(form.cookingTime || 0),
+      deliveryTime: Number(form.deliveryTime || 0),
     };
 
     // validation
     if (!payload.name || !payload.description || !payload.price) {
-      alert("Please fill all required fields");
+      toast.error("Please fill all required fields");
       return;
     }
 
     if (isNaN(payload.price) || payload.price <= 0) {
-      alert("Price must be a valid positive number");
+      toast.error("Price must be a valid positive number");
       return;
     }
 
@@ -60,14 +68,14 @@ export function AddProductForm() {
       const res = await addMealByProvider(payload);
 
       if (res?.success) {
-        alert("Data is saved ✅");
+        toast.success("Data is saved ✅");
         resetForm(); // clear form after success
       } else {
-        alert("Failed to save data");
+        toast.error("Failed to save data");
       }
     } catch (err: any) {
       console.log("ERROR:", err?.response?.data || err.message);
-      alert("Something went wrong");
+      toast.error("Something went wrong");
     }
   };
 
@@ -131,6 +139,32 @@ export function AddProductForm() {
           required
         />
       </Field>
+
+      <div className="grid grid-cols-2 gap-4">
+        {/* COOKING TIME */}
+        <Field>
+          <FieldLabel>Cooking Time (Min)</FieldLabel>
+          <Input
+            name="cookingTime"
+            type="number"
+            value={form.cookingTime}
+            onChange={handleChange}
+            required
+          />
+        </Field>
+
+        {/* DELIVERY TIME */}
+        <Field>
+          <FieldLabel>Delivery Time (Min)</FieldLabel>
+          <Input
+            name="deliveryTime"
+            type="number"
+            value={form.deliveryTime}
+            onChange={handleChange}
+            required
+          />
+        </Field>
+      </div>
 
       {/* SUBMIT */}
       <Button

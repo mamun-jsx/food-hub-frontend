@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import Image from "next/image";
 import { Trash2, Plus, Minus, ShoppingBag, MapPin, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -64,7 +65,10 @@ export default function ViewCart() {
   );
 
   const handleConfirmOrder = async () => {
-    if (!address.trim()) return alert("Please enter a delivery address");
+    if (!address.trim()) {
+      toast.error("Please enter a delivery address");
+      return;
+    }
     setIsPlacing(true);
 
     try {
@@ -87,13 +91,13 @@ export default function ViewCart() {
         setCartItems([]);
         window.dispatchEvent(new Event("cartUpdated"));
         setShowAddressModal(false);
-        alert("Order Placed Successfully!");
+        toast.success("Order Placed Successfully!");
       } else {
-        alert("Failed to place order.");
+        toast.error("Failed to place order.");
       }
     } catch (error) {
       console.error(error);
-      alert("Something went wrong.");
+      toast.error("Something went wrong.");
     } finally {
       setIsPlacing(false);
     }
@@ -107,7 +111,7 @@ export default function ViewCart() {
       <div className="flex flex-col items-center justify-center py-20">
         <ShoppingBag size={64} className="text-gray-300 mb-4" />
         <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
-        <Link href="/product">
+        <Link href="/meals">
           <Button>Browse Products</Button>
         </Link>
       </div>

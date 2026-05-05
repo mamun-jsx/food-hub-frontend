@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { updateUserProfile } from "../../../../service/user-api-endpoint";
 import { IProfileUpdateForm } from "@/types/form.Types";
 
@@ -17,7 +18,7 @@ const UpdateProfileForm = () => {
 
     try {
       await updateUserProfile(payload as IProfileUpdateForm);
-      alert("Profile updated!");
+      toast.success("Profile updated!");
     } catch (error) {
       console.log(error);
     }

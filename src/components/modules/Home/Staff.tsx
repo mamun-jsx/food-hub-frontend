@@ -1,77 +1,124 @@
 import React from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import {
+  ShoppingBasket,
+  Calendar,
+  Clock,
+  UtensilsCrossed,
+  Sparkles,
+  ChefHat,
+  Leaf,
+} from "lucide-react";
+import shefImage from "@/assets/shef.webp";
 
-const staff = [
+const features = [
   {
-    id: 1,
-    name: "John Doe",
-    specialty: "Master Chef",
-    country: "USA",
-    image:
-      "https://images.unsplash.com/photo-1615109398623-88346a601842?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bWFufGVufDB8fDB8fHww",
+    icon: <ShoppingBasket className="w-6 h-6" />,
+    title: "Online Order",
   },
   {
-    id: 2,
-    name: "Maria Lopez",
-    specialty: "Pastry Chef",
-    country: "Spain",
-    image: "https://images.unsplash.com/photo-1607746882042-944635dfe10e",
+    icon: <Calendar className="w-6 h-6" />,
+    title: "Pre-Reservation",
   },
   {
-    id: 3,
-    name: "Akira Tanaka",
-    specialty: "Sushi Chef",
-    country: "Japan",
-    image:
-      "https://plus.unsplash.com/premium_photo-1689551670902-19b441a6afde?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8d29tYW58ZW58MHx8MHx8fDA%3D",
+    icon: <Clock className="w-6 h-6" />,
+    title: "24/7 Service",
   },
   {
-    id: 4,
-    name: "Fatima Khan",
-    specialty: "Grill Chef",
-    country: "Pakistan",
-    image:
-      "https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8d29tYW58ZW58MHx8MHx8fDA%3D",
+    icon: <UtensilsCrossed className="w-6 h-6" />,
+    title: "Organized Foodie Place",
+  },
+  {
+    icon: <Sparkles className="w-6 h-6" />,
+    title: "Clean Kitchen",
+  },
+  {
+    icon: <ChefHat className="w-6 h-6" />,
+    title: "Super Chefs",
   },
 ];
 
 export default function Staff() {
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Title */}
-        <h2 className="text-3xl font-bold text-center mb-4">Our Chefs</h2>
-        <p className="text-center text-gray-600 mb-12">
-          Meet our talented team of chefs from around the world.
-        </p>
+    <section className="py-20 bg-background overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        {/* Left Column: Creative Circular Composition */}
+        <div className="relative aspect-square w-full flex items-center justify-center order-2 lg:order-1">
+          {/* Large Central Circle */}
+          <div className="relative w-4/5 h-4/5 rounded-full overflow-hidden border-8 border-white shadow-2xl z-10">
+            <Image
+              src={shefImage}
+              alt="Professional Chef"
+              className="w-full h-full object-cover"
+              priority
+            />
+          </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {staff.map((member) => (
-            <div
-              key={member.id}
-              className="bg-white p-6 rounded-lg shadow-md text-center"
-            >
-              {/* Profile Picture */}
-              <div className="w-24 h-24 mx-auto mb-4 rounded-full border-4 border-green-600 overflow-hidden">
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-full h-full object-cover"
-                />
+          {/* Floating Spices/Greens (Decorative placeholders using patterns/colors since local assets are limited) */}
+          <div className="absolute top-[5%] right-[5%] w-1/4 h-1/4 rounded-full overflow-hidden border-4 border-white shadow-lg z-20 bg-primary/20 flex items-center justify-center">
+            <Image
+              src="https://images.unsplash.com/photo-1532336414038-cf19250c5757?w=400&auto=format&fit=crop&q=60"
+              alt="Fresh Spices"
+              fill
+              className="object-cover"
+            />
+          </div>
+
+          <div className="absolute bottom-[10%] left-[0%] w-1/5 h-1/5 rounded-full overflow-hidden border-4 border-white shadow-lg z-20 bg-green-100 flex items-center justify-center">
+            <Image
+              src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&auto=format&fit=crop&q=60"
+              alt="Fresh Greens"
+              fill
+              className="object-cover"
+            />
+          </div>
+
+          {/* Decorative Floating Element */}
+          <div className="absolute top-[15%] left-[10%] p-4 bg-white rounded-full shadow-xl z-20 hidden md:block animate-bounce">
+            <Leaf className="text-primary w-8 h-8" />
+          </div>
+
+          {/* Background Decorative Rings */}
+          <div className="absolute inset-0 border-[1px] border-primary/20 rounded-full scale-110"></div>
+          <div className="absolute inset-0 border-[1px] border-primary/10 rounded-full scale-125"></div>
+        </div>
+
+        {/* Right Column: Content */}
+        <div className="flex flex-col gap-8 order-1 lg:order-2">
+          <div>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              We Are More Than <br />
+              <span className="text-primary italic">Multiple Service</span>
+            </h2>
+            <p className="text-lg text-gray-600 max-w-xl leading-relaxed">
+              At FoodHub, we believe dining is an immersive journey of the
+              senses. Our philosophy centers on the harmony of traditional
+              artisanal techniques and modern innovation, sourcing only the
+              finest ingredients to craft moments that linger long after the
+              last bite.
+            </p>
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-8">
+            {features.map((feature, index) => (
+              <div key={index} className="flex items-center gap-4 group">
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm">
+                  {feature.icon}
+                </div>
+                <span className="font-semibold text-gray-800">
+                  {feature.title}
+                </span>
               </div>
+            ))}
+          </div>
 
-              {/* Name */}
-              <h3 className="text-lg font-semibold text-gray-900">
-                {member.name}
-              </h3>
-
-              {/* Specialty */}
-              <p className="text-green-600 font-medium">{member.specialty}</p>
-
-              {/* Country */}
-              <p className="text-gray-500">{member.country}</p>
-            </div>
-          ))}
+          <div className="pt-4">
+            <Button className="bg-primary cursor-pointer hover:bg-primary-hover text-white px-10 py-7 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+              About Us
+            </Button>
+          </div>
         </div>
       </div>
     </section>

@@ -51,15 +51,15 @@ export function ProductCard({ payload }: productCardProps) {
           {description}
         </CardDescription>
         <div className="mt-4 flex items-baseline gap-1">
-          <span className="text-2xl font-bold text-green-600">{price}</span>
+          <span className="text-2xl font-bold text-primary">{price}</span>
           <span className="text-sm font-medium text-muted-foreground">TK</span>
         </div>
       </CardContent>
 
       <CardFooter className="border-t bg-slate-50/50 p-4">
         <Link
-          href={`/product/${id}`}
-          className="w-full rounded-lg bg-slate-900 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-green-600"
+          href={`/meals/${id}`}
+          className="w-full rounded-lg bg-slate-900 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
         >
           View Details
         </Link>

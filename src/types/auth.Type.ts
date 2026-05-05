@@ -9,7 +9,7 @@ export interface AuthSession {
   };
   user: {
     id: string;
-    role: "ADMIN" | "PROVIDER" | "CUSTOMER";
+    role: "ADMIN" | "PROVIDER" | "USER";
     name?: string;
     email?: string;
     image?: string;

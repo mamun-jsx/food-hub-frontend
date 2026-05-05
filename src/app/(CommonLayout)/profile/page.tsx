@@ -1,13 +1,13 @@
 "use client";
 import { Skeleton } from "@/components/ui/skeleton";
-import { authClient } from "../../../../service/auth/auth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 const Profile = () => {
   const userAvater =
     "https://img.freepik.com/premium-vector/male-face-avatar-icon-set-flat-design-social-media-profiles_1281173-3806.jpg?w=360";
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending } = useAuth();
   const router = useRouter();
   
   useEffect(() => {
@@ -17,13 +17,13 @@ const Profile = () => {
   }, [isPending, session, router]);
 
   if (isPending) {
-    return <Skeleton />;
+    return <div className="p-10"><Skeleton className="h-40 w-full" /></div>;
   }
 
   if (!session) {
     return null;
   }
-  const { name, email, image, emailVerified, createdAt, id } = session?.user;
+  const { name, email, image, id, role } = session?.user;
 
   return (
     <section className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-8">
@@ -46,14 +46,8 @@ const Profile = () => {
             </h2>
             <p className="text-gray-500 text-sm sm:text-base">{email}</p>
 
-            <span
-              className={`inline-block mt-2 px-3 py-1 text-xs rounded-full ${
-                emailVerified
-                  ? "bg-green-100 text-green-600"
-                  : "bg-red-100 text-red-600"
-              }`}
-            >
-              {emailVerified ? "Verified" : "Not Verified"}
+            <span className="inline-block mt-2 px-3 py-1 text-xs rounded-full bg-green-100 text-green-600">
+              Role: {role}
             </span>
           </div>
         </div>
@@ -69,9 +63,9 @@ const Profile = () => {
           </div>
 
           <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-gray-500">Joined</p>
+            <p className="text-gray-500">Account Type</p>
             <p className="font-medium">
-              {new Date(createdAt).toLocaleDateString()}
+              {role}
             </p>
           </div>
         </div>

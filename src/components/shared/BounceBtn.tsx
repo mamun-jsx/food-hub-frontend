@@ -1,6 +1,6 @@
 const BounceBtn = ({ title }: { title: string }) => {
   return (
-    <span className="relative shadow-xl px-10 py-3  hover:cursor-pointer bg-green-600 text-white border border-gray-500 rounded-md transition-transform active:scale-95">
+    <span className="relative shadow-xl px-10 py-3  hover:cursor-pointer bg-primary text-white border border-gray-500 rounded-md transition-transform active:scale-95 hover:bg-primary-hover">
       {/* Button Text */}
       <span className="text-xl">{title}</span>
 

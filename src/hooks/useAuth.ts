@@ -1,12 +1,20 @@
 "use client";
 
-import { AuthSession } from "@/types/auth.Type";
-import { authClient } from "../../service/auth/auth";
+import { useEffect, useState } from "react";
+import { getSession } from "../../service/auth/authService";
 
 export const useAuth = () => {
-  return authClient.useSession() as {
-    data: AuthSession | null;
-    isPending: boolean;
+  const [session, setSession] = useState<any>(null);
+  const [isPending, setIsPending] = useState(true);
+
+  useEffect(() => {
+    const data = getSession();
+    setSession(data);
+    setIsPending(false);
+  }, []);
+
+  return {
+    data: session,
+    isPending,
   };
 };
-

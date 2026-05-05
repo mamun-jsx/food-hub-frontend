@@ -49,7 +49,7 @@ const page = async ({ params }: PageProps) => {
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {providerProducts?.data?.map((product: providerProduct) => (
-          <Link key={product.id} href={`/product/${product?.id}`}>
+          <Link key={product.id} href={`/meals/${product?.id}`}>
             <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition">
               {/* Image */}
               <div className="h-48 w-full overflow-hidden">

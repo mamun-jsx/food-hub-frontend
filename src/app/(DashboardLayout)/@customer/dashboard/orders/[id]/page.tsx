@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import {
   fetchOrderDetailsByID,
   submitReview,
@@ -78,15 +79,15 @@ export default function OrderDetails({
     };
     console.log("Submitting Review Payload:", payload); 
     if (!payload.userId || !payload.mealId) {
-      alert("Missing User ID or Meal ID");
+      toast.error("Missing User ID or Meal ID");
       return;
     }
     try {
       await submitReview(payload);
-      alert("Review submitted successfully!");
+      toast.success("Review submitted successfully!");
       setReviewItem(null); // Close form
     } catch (err) {
-      alert("Failed to submit review");
+      toast.error("Failed to submit review");
     }
   };
 

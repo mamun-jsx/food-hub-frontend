@@ -17,6 +17,8 @@ export interface IMeal {
   image: string;
   providerId: string;
   category: string;
+  cookingTime?: number;
+  deliveryTime?: number;
   reviews: IReview[];
 }
 

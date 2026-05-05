@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSessionCookie } from "better-auth/cookies";
 
 export function middleware(request: NextRequest) {
-  const session = getSessionCookie(request);
+  const token = request.cookies.get("accessToken")?.value;
   const { pathname } = request.nextUrl;
 
   const isProtectedRoute =
@@ -10,25 +9,27 @@ export function middleware(request: NextRequest) {
     pathname.startsWith("/profile") ||
     pathname.startsWith("/checkout");
 
-  // If no session and trying to access protected routes, redirect to login
-  if (!session && isProtectedRoute) {
+  const isAuthRoute = pathname.startsWith("/login") || pathname.startsWith("/register");
+
+  // If no token and trying to access protected routes, redirect to login
+  if (!token && isProtectedRoute) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // If session exists and trying to access auth pages, allow it (better-auth will handle)
+  // If token exists and trying to access auth pages, redirect to home
+  if (token && isAuthRoute) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
   return NextResponse.next();
 }
 
-// Configure which paths the middleware runs on
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    "/dashboard/:path*",
+    "/profile/:path*",
+    "/checkout/:path*",
+    "/login",
+    "/register",
   ],
 };

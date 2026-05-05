@@ -11,7 +11,9 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useState } from "react";
-import { authClient } from "../../../../service/auth/auth";
+import { registerUser } from "../../../../service/auth/authService";
+
+import toast from "react-hot-toast";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -21,39 +23,36 @@ export function RegisterForm() {
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   const handleRegister = async () => {
-    setMessage("");
-
-    // simple validation
     if (!name || !email || !password) {
-      setMessage("All fields are required");
+      toast.error("All fields are required");
       return;
     }
 
     if (password.length < 8) {
-      setMessage("Password must be at least 8 characters");
+      toast.error("Password must be at least 8 characters");
       return;
     }
     setLoading(true);
+    const toastId = toast.loading("Creating account...");
     try {
-      const { data, error } = await authClient.signUp.email({
-        name: name.toUpperCase(),
+      const result = await registerUser({
+        name: name,
         email,
         password,
-        callbackURL: "/",
       });
 
-      if (error) {
-        setMessage(error.message || "Register failed");
+      if (!result.success) {
+        toast.error(result.message || "Register failed", { id: toastId });
       } else {
+        toast.success("Registration successful!", { id: toastId });
         router.push("/");
         router.refresh();
       }
     } catch (err) {
       console.log(err);
-      setMessage("Something went wrong");
+      toast.error("Something went wrong", { id: toastId });
     } finally {
       setLoading(false);
     }
@@ -62,7 +61,6 @@ export function RegisterForm() {
   return (
     <div className="max-w-md mx-auto space-y-6">
       <FieldGroup>
-        {/* Name */}
         <Field>
           <FieldLabel htmlFor="name">Name</FieldLabel>
           <Input
@@ -74,7 +72,6 @@ export function RegisterForm() {
           />
         </Field>
 
-        {/* Email */}
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
@@ -89,7 +86,6 @@ export function RegisterForm() {
           </FieldDescription>
         </Field>
 
-        {/* Password */}
         <Field>
           <FieldLabel htmlFor="password">Password</FieldLabel>
           <Input
@@ -101,29 +97,26 @@ export function RegisterForm() {
           />
         </Field>
 
-        {/* Message */}
-        {message && <p className="text-red-500 text-sm">{message}</p>}
 
-        {/* Button */}
+
         <Field orientation="horizontal">
           <Button
             type="button"
             onClick={handleRegister}
             disabled={loading}
-            className="w-full bg-green-600 hover:bg-green-700 text-white"
+            className="w-full text-white"
           >
             {loading ? "Registering..." : "Register"}
           </Button>
         </Field>
       </FieldGroup>
 
-      {/* Login link */}
       <div className="text-center text-sm text-gray-600">
         <p>
           Already have an account?{" "}
           <Link
             href="/login"
-            className="text-green-600 font-medium hover:underline"
+            className="text-primary font-medium hover:underline"
           >
             Login here
           </Link>

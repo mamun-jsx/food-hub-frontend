@@ -4,48 +4,51 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useState } from "react";
-import { authClient } from "../../../../service/auth/auth";
+import { loginUser } from "../../../../service/auth/authService";
 import { useRouter } from "next/navigation";
+
+import toast from "react-hot-toast";
 
 export function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   const loginCredential = async () => {
-    setMessage("");
+    if (!email || !password) {
+      toast.error("Email and password are required");
+      return;
+    }
 
-    // Validation check
     if (password.length < 8) {
-      setMessage("Password must be at least 8 characters");
+      toast.error("Password must be at least 8 characters");
       return;
     }
 
     setLoading(true);
+    const toastId = toast.loading("Logging in...");
     try {
-      const { data, error } = await authClient.signIn.email({
+      const result = await loginUser({
         email: email,
         password: password,
-        callbackURL: "/",
       });
 
-      if (error) {
-        // Better Auth returns error messages directly
-        alert(error.message || "Login failed");
+      if (!result.success) {
+        toast.error(result.message || "Login failed", { id: toastId });
       } else {
+        toast.success("Login successful!", { id: toastId });
         router.push("/");
         router.refresh();
       }
     } catch (err) {
       console.error("Login error:", err);
+      toast.error("An unexpected error occurred", { id: toastId });
     } finally {
       setLoading(false);
     }
   };
- 
- 
+
   return (
     <div className="max-w-md mx-auto space-y-6">
       <FieldGroup>
@@ -71,25 +74,59 @@ export function LoginForm() {
           />
         </Field>
 
-        {/* Display validation or error messages */}
-        {message && (
-          <p className="text-red-500 text-sm font-medium">{message}</p>
-        )}
+
 
         <Button
           onClick={loginCredential}
           disabled={loading}
-          className="w-full bg-green-600 hover:bg-green-700 text-white cursor-pointer"
+          className="w-full text-white cursor-pointer"
         >
           {loading ? "Logging in..." : "Login"}
         </Button>
+
+        {/* Quick Login Buttons */}
+        <div className="grid grid-cols-3 gap-2 mt-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setEmail("superadmin@gmail.com");
+              setPassword("123456789");
+            }}
+            className="text-xs border-primary text-primary hover:bg-primary/10"
+          >
+            Admin
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setEmail("almamun@gmail.com");
+              setPassword("123456789");
+            }}
+            className="text-xs border-primary text-primary hover:bg-primary/10"
+          >
+            User
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setEmail("provider@gmail.com");
+              setPassword("123456789");
+            }}
+            className="text-xs border-primary text-primary hover:bg-primary/10"
+          >
+            Provider
+          </Button>
+        </div>
       </FieldGroup>
       <div className="text-center text-sm text-gray-600">
         <p>
           do not have an account?{" "}
           <Link
             href="/register"
-            className="text-green-600 font-medium hover:underline"
+            className="text-primary font-medium hover:underline"
           >
             Please register
           </Link>

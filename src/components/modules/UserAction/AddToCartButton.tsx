@@ -1,5 +1,6 @@
 "use client";
 import { ShoppingCart } from "lucide-react";
+import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { IMeal } from "@/types/meal.Type";
 export interface CartItem {
@@ -41,7 +42,7 @@ export default function AddToCartButton({ meal }: { meal: IMeal }) {
     // 4. Trigger custom event so Navbar updates instantly
     window.dispatchEvent(new Event("cartUpdated"));
 
-    alert(`${meal.name} added to cart!`);
+    toast.success(`${meal.name} added to cart!`);
   };
 
   return (

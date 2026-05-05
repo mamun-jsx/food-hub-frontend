@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import {
   createProviderProfile,
   updateProviderProfileData,
@@ -31,10 +32,10 @@ const Page = () => {
     try {
       const res = await createProviderProfile(form);
       console.log(res.data);
-      alert("Profile Created ✅");
+      toast.success("Profile Created ✅");
       setIsEdit(true);
     } catch (err: any) {
-      alert(err.response?.data?.message || "Create failed");
+      toast.error(err.response?.data?.message || "Create failed");
     }
   };
 
@@ -49,7 +50,7 @@ const Page = () => {
           address: "",
           phone: "",
         });
-        alert("data updated");
+        toast.success("Data updated ✅");
         setIsEdit(true);
       }
     } catch (err) {
