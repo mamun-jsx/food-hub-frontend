@@ -68,7 +68,7 @@ const UserTable = ({ users: initialUsers }: Props) => {
                     user.role === "ADMIN"
                       ? "bg-red-100 text-red-600"
                       : user.role === "PROVIDER"
-                        ? "bg-blue-100 text-blue-600"
+                        ? "bg-primary text-white"
                         : "bg-primary/10 text-primary"
                   }`}
                 >

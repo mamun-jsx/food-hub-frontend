@@ -23,12 +23,14 @@ export default function DashboardSidebar() {
 
   const navItemsForAdmin = [
     { name: "Home", href: "/", icon: Home },
+    { name: "Dashboard", href: "/dashboard", icon: LayoutGrid },
     { name: "Orders", href: "/dashboard/orders", icon: ClipboardList },
     { name: "Users", href: "/dashboard/users", icon: Users },
   ];
 
   const navItemsForProvider = [
     { name: "Home", href: "/", icon: Home },
+    { name: "Dashboard", href: "/dashboard", icon: LayoutGrid },
     { name: "Orders", href: "/dashboard/orders", icon: ClipboardList },
     { name: "Add Products", href: "/dashboard/add-products", icon: PlusCircle },
     { name: "All Items", href: "/dashboard/meals", icon: LayoutGrid },
@@ -36,6 +38,7 @@ export default function DashboardSidebar() {
 
   const navItemsForUser = [
     { name: "Home", href: "/", icon: Home },
+    { name: "Dashboard", href: "/dashboard", icon: LayoutGrid },
     { name: "Orders", href: "/dashboard/orders", icon: ClipboardList },
     { name: "View Cart", href: "/dashboard/view-cart", icon: ShoppingCart },
   ];

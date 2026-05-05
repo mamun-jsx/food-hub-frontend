@@ -3,7 +3,7 @@ import { fetchProductById } from "../../../../../service/user-api-endpoint";
 import { IMeal, IReview } from "@/types/meal.Type";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import { Star, Clock, ArrowLeft } from "lucide-react";
+import { Star, Clock, ArrowLeft, Navigation } from "lucide-react";
 import Link from "next/link";
 import AddToCartButton from "@/components/modules/UserAction/AddToCartButton";
 
@@ -66,11 +66,24 @@ const ProductDetailsPage = async ({ params }: PageProps) => {
               </div>
             </div>
 
-            <div className="border-y py-6">
-              <h3 className="text-lg font-semibold mb-2">Description</h3>
-              <p className="text-slate-600 leading-relaxed">
-                {meal.description}
-              </p>
+            <div className="border-y py-6 space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Description</h3>
+                <p className="text-slate-600 leading-relaxed">
+                  {meal.description}
+                </p>
+              </div>
+              
+              <div className="flex items-center gap-6 pt-2">
+                 <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl border border-gray-100">
+                    <Clock size={16} className="text-primary" />
+                    <span className="text-sm font-bold text-gray-700">{meal.cookingTime || 0} min Prep</span>
+                 </div>
+                 <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl border border-gray-100">
+                    <Navigation size={16} className="text-primary" />
+                    <span className="text-sm font-bold text-gray-700">{meal.deliveryTime || 0} min Delivery</span>
+                 </div>
+              </div>
             </div>
 
             <div className="flex items-center justify-between">
@@ -78,7 +91,7 @@ const ProductDetailsPage = async ({ params }: PageProps) => {
                 <p className="text-sm text-muted-foreground font-medium">
                   Total Price
                 </p>
-                <h2 className="text-3xl font-bold text-green-600">
+                <h2 className="text-3xl font-bold text-primary">
                   {meal.price} <span className="text-lg">TK</span>
                 </h2>
               </div>
@@ -97,9 +110,9 @@ const ProductDetailsPage = async ({ params }: PageProps) => {
               </p>
               <Link
                 href={`/provider/${meal?.providerId}`}
-                className="px-2 py-1 border border-green-500 rounded hover:cursor-pointer hover:bg-green-400 hover:text-white hover:border-black"
+                className="inline-block px-4 py-2 border border-primary text-primary rounded-full hover:cursor-pointer hover:bg-primary hover:text-white transition-all duration-300"
               >
-                provider&apos;s Items
+                View provider&apos;s Profile
               </Link>
             </div>
           </div>

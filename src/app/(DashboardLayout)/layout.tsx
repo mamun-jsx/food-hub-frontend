@@ -2,6 +2,7 @@
 import DashboardSidebar from "@/components/modules/DashboardComponent/DashboardSidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 export default function DashboardLayout({
   admin,
@@ -14,9 +15,18 @@ export default function DashboardLayout({
 }) {
   const { data: session, isPending } = useAuth();
 
-  if (isPending) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  if (isPending) return null; // Very fast, avoid flash
+  
   if (!session) {
-    return <div className="flex h-screen items-center justify-center">Unauthorized - No session found</div>;
+    return (
+      <div className="flex h-screen flex-col items-center justify-center bg-[#FFFCF7]">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Access Denied</h2>
+        <p className="text-gray-500 mb-6">Please log in to access your dashboard.</p>
+        <Link href="/login" className="bg-primary text-white px-8 py-3 rounded-full hover:bg-primary-hover transition-all">
+          Go to Login
+        </Link>
+      </div>
+    );
   }
 
   const role = session?.user?.role;

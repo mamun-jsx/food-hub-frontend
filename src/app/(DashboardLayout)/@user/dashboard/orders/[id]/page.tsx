@@ -110,7 +110,7 @@ export default function OrderDetails({
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Order Details</h1>
         <span
-          className={`px-3 py-1 rounded-full text-xs font-bold ${order.status === "DELIVERED" ? "bg-primary/20 text-primary" : "bg-blue-100 text-blue-700"}`}
+          className={`px-3 py-1 rounded-full text-xs font-bold ${order.status === "DELIVERED" ? "bg-primary/20 text-primary" : "bg-primary hover:bg-secondary text-white"}`}
         >
           {order.status}
         </span>
@@ -238,7 +238,10 @@ export default function OrderDetails({
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" className="flex-1 bg-primary hover:bg-primary-hover">
+                  <Button
+                    type="submit"
+                    className="flex-1 bg-primary hover:bg-primary-hover"
+                  >
                     Submit Review
                   </Button>
                 </div>

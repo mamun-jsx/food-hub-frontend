@@ -60,3 +60,8 @@ export const updateUserProfile = async (data: IProfileUpdateForm) => {
   const response = await axiosApi.patch("/api/profile-update", data);
   return response.data;
 };
+// get current user profile
+export const fetchMyProfile = async () => {
+  const response = await axiosApi.get("/api/profile");
+  return response.data;
+};

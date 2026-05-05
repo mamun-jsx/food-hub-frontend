@@ -25,7 +25,7 @@ export const addMealByProvider = async (data: IMealForm) => {
 };
 
 // get all meals which Posted by Provider
-export const fetchProvidersMeal = async () => {
+export const getMealByProvider = async () => {
   const res = await axiosApi.get("/api/provider/meals");
   return res.data;
 };
@@ -48,5 +48,9 @@ export const createProviderProfile = async (data: IProviderProfile) => {
 };
 export const updateProviderProfileData = async (data: IProviderProfile) => {
   const res = await axiosApi.put("/api/provider/profile", data);
+  return res.data;
+};
+export const fetchProviderProfile = async () => {
+  const res = await axiosApi.get("/api/provider/profile");
   return res.data;
 };

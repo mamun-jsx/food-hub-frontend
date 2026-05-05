@@ -1,33 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  fetchProvidersMeal,
-  deleteMealByProvider,
-  updateMealByProvider,
-} from "../../../../../../service/provider-apiEndPoint";
-import { IMealForm } from "@/types/form.Types";
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
-type Meal = {
+import { IMealForm, categorys } from "@/types/form.Types";
+import MealCard from "@/components/shared/MealCard";
+import { Button } from "@/components/ui/button";
+import { Edit2, Trash2, Plus } from "lucide-react";
+import Loader from "@/components/shared/Loader";
+import { deleteMealByProvider, getMealByProvider, updateMealByProvider } from "../../../../../../service/provider-apiEndPoint";
+
+interface Meal {
   id: string;
   name: string;
+  category: string;
   price: number;
   description: string;
-  category: string;
   image: string;
   cookingTime?: number;
   deliveryTime?: number;
-};
-enum categorys {
-  PASTA = "Pasta",
-  PIZZA = "Pizza",
-  BURGER = "Burger",
-  BIRYANI = "Biryani",
 }
-const categories = ["Pasta", "Pizza", "Burger", "Biryani"];
 
 const ProviderMealsView = () => {
-  const [meals, setMeals] = useState<Meal[]>([]); // Assuming the API returns an array
+  const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
   const [editMeal, setEditMeal] = useState<Meal | null>(null);
 
@@ -41,13 +36,15 @@ const ProviderMealsView = () => {
     deliveryTime: 0,
   });
 
+  const categories = Object.values(categorys);
+
   const loadMeals = async () => {
     try {
       setLoading(true);
-      const data = await fetchProvidersMeal();
-      // If your API returns { meals: [...] }, use data.meals. Otherwise use data.
-      const mealsData = data?.meals || data || [];
-      setMeals(mealsData);
+      const res = await getMealByProvider();
+      setMeals(res?.meals || []);
+    } catch (err) {
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -58,12 +55,15 @@ const ProviderMealsView = () => {
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure?")) return;
+    if (!window.confirm("Are you sure you want to delete this meal?")) return;
+    const toastId = toast.loading("Deleting meal...");
     try {
       await deleteMealByProvider(id);
-      await loadMeals();
+      setMeals((prev) => prev.filter((m) => m.id !== id));
+      toast.success("Meal deleted successfully", { id: toastId });
     } catch (err) {
       console.error(err);
+      toast.error("Failed to delete meal", { id: toastId });
     }
   };
 
@@ -71,7 +71,6 @@ const ProviderMealsView = () => {
     setEditMeal(meal);
     setFormData({
       name: meal.name,
-      // Cast the string from the API to your Enum type
       category: meal.category as categorys,
       price: meal.price,
       description: meal.description,
@@ -81,7 +80,6 @@ const ProviderMealsView = () => {
     });
   };
 
-  // FIXED: Handle Number conversion for Price and Select elements
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -99,156 +97,189 @@ const ProviderMealsView = () => {
 
   const handleUpdate = async () => {
     if (!editMeal) return;
+    const toastId = toast.loading("Updating meal...");
     try {
-      await updateMealByProvider(editMeal.id, formData);
-      setEditMeal(null);
-      await loadMeals();
+      const res = await updateMealByProvider(editMeal.id, formData);
+      if (res.success) {
+        // Optimistic update
+        setMeals((prev) =>
+          prev.map((m) => (m.id === editMeal.id ? { ...m, ...formData } : m)),
+        );
+        setEditMeal(null);
+        toast.success("Meal updated successfully", { id: toastId });
+      }
     } catch (err) {
       console.error(err);
+      toast.error("Failed to update meal", { id: toastId });
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <div className="flex justify-center py-20">
+        <Loader />
+      </div>
+    );
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Provider Meals</h2>
+    <div className="p-6">
+      <header className="flex justify-between items-center mb-10">
+        <div>
+          <h1 className="text-3xl font-black text-gray-900">Your Menu</h1>
+          <p className="text-gray-500">
+            Manage and update your delicious offerings
+          </p>
+        </div>
+        <Button
+          asChild
+          className="rounded-full px-6 bg-primary hover:bg-primary-hover"
+        >
+          <a href="/dashboard">
+            <Plus className="mr-2 w-4 h-4" /> Add New Dish
+          </a>
+        </Button>
+      </header>
 
-      <table className="w-full border border-gray-300">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2 border">Image</th>
-            <th className="p-2 border">Name</th>
-            <th className="p-2 border">Category</th>
-            <th className="p-2 border">Cooking</th>
-            <th className="p-2 border">Delivery</th>
-            <th className="p-2 border">Price</th>
-            <th className="p-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* FIXED: meals is now typed as an array */}
+      {meals.length === 0 ? (
+        <div className="bg-white rounded-3xl p-20 text-center border border-dashed border-gray-200">
+          <p className="text-gray-400 font-medium">
+            No meals found in your menu.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {meals.map((meal) => (
-            <tr key={meal.id} className="text-center">
-              <td className="p-2 border flex justify-center">
-                <img
-                  src={meal.image}
-                  alt={meal.name}
-                  className="w-16 h-16 object-cover"
-                />
-              </td>
-              <td className="p-2 border">{meal.name}</td>
-              <td className="p-2 border">{meal.category}</td>
-              <td className="p-2 border">{meal.cookingTime} min</td>
-              <td className="p-2 border">{meal.deliveryTime} min</td>
-              <td className="p-2 border">{meal.price} TK</td>
-              <td className="p-2 border space-x-2">
-                <button
+            <MealCard key={meal.id} item={meal as any}>
+              <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                <Button
+                  size="sm"
+                  variant="outline"
                   onClick={() => openEdit(meal)}
-                  className="px-2 py-1 bg-blue-500 text-white rounded"
+                  className="rounded-full h-8 w-8 p-0 border-primary text-primary hover:bg-primary hover:text-white"
                 >
-                  Update
-                </button>
-                <button
+                  <Edit2 size={14} />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
                   onClick={() => handleDelete(meal.id)}
-                  className="px-2 py-1 bg-red-500 text-white rounded"
+                  className="rounded-full h-8 w-8 p-0 border-red-200 text-red-500 hover:bg-red-500 hover:text-white"
                 >
-                  Delete
-                </button>
-              </td>
-            </tr>
+                  <Trash2 size={14} />
+                </Button>
+              </div>
+            </MealCard>
           ))}
-        </tbody>
-      </table>
+        </div>
+      )}
 
+      {/* UPDATE MODAL */}
       {editMeal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 w-[420px] rounded-lg shadow-xl">
-            <h2 className="text-lg font-bold mb-4">Update Meal</h2>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-8 w-full max-w-md rounded-[2rem] shadow-2xl animate-in fade-in zoom-in duration-300">
+            <h2 className="text-2xl font-black mb-6 text-gray-900">
+              Update Dish
+            </h2>
 
-            <label className="block text-sm font-medium mb-1">Name</label>
-            <input
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="border p-2 w-full mb-3"
-            />
-
-            <label className="block text-sm font-medium mb-1">Category</label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="border p-2 w-full mb-3"
-            >
-              <option value="">Select Category</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-
-            <label className="block text-sm font-medium mb-1">Price</label>
-            <input
-              name="price"
-              type="number"
-              value={formData.price}
-              onChange={handleChange}
-              className="border p-2 w-full mb-3"
-            />
-
-            <label className="block text-sm font-medium mb-1">
-              Description
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="border p-2 w-full mb-3"
-              rows={3}
-            />
-
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Cooking Time (Min)
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">
+                  Dish Name
                 </label>
                 <input
-                  name="cookingTime"
-                  type="number"
-                  value={formData.cookingTime}
+                  name="name"
+                  value={formData.name}
                   onChange={handleChange}
-                  className="border p-2 w-full"
+                  className="w-full bg-gray-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-primary/20 transition-all"
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Delivery Time (Min)
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">
+                  Category
+                </label>
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  className="w-full bg-gray-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-primary/20 transition-all"
+                >
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">
+                  Price (TK)
                 </label>
                 <input
-                  name="deliveryTime"
+                  name="price"
                   type="number"
-                  value={formData.deliveryTime}
+                  value={formData.price}
                   onChange={handleChange}
-                  className="border p-2 w-full"
+                  className="w-full bg-gray-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-primary/20 transition-all"
                 />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1 text-gray-400">
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  className="w-full bg-gray-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-primary/20 transition-all"
+                  rows={3}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">
+                    Cooking (Min)
+                  </label>
+                  <input
+                    name="cookingTime"
+                    type="number"
+                    value={formData.cookingTime}
+                    onChange={handleChange}
+                    className="w-full bg-gray-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-primary/20 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">
+                    Delivery (Min)
+                  </label>
+                  <input
+                    name="deliveryTime"
+                    type="number"
+                    value={formData.deliveryTime}
+                    onChange={handleChange}
+                    className="w-full bg-gray-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-primary/20 transition-all"
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="flex justify-end gap-2">
-              <button
+            <div className="flex gap-3 mt-8">
+              <Button
+                variant="ghost"
                 onClick={() => setEditMeal(null)}
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded"
+                className="flex-1 rounded-xl h-12"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleUpdate}
-                className="px-4 py-2 bg-green-600 text-white rounded"
+                className="flex-1 bg-primary hover:bg-primary-hover text-white rounded-xl h-12 font-bold"
               >
                 Save Changes
-              </button>
+              </Button>
             </div>
           </div>
         </div>

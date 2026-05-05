@@ -1,4 +1,4 @@
-import { ProductCard } from "@/components/modules/ProductsComponent/ProductCard";
+import MealCard from "@/components/shared/MealCard";
 import { IMeal } from "@/types/meal.Type";
 
 export default async function ProductPage({
@@ -38,11 +38,9 @@ export default async function ProductPage({
   }
 
   return (
-    <div className="py-10 grid grid-cols-1 md:grid-cols-3 gap-4 w-10/12 mx-auto">
+    <div className="py-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 w-11/12 max-w-7xl mx-auto">
       {mealLists.map((item: IMeal) => (
-        <div key={item.id}>
-          <ProductCard payload={item} />
-        </div>
+        <MealCard key={item.id} item={item} />
       ))}
     </div>
   );

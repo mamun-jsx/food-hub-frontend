@@ -25,28 +25,36 @@ const UpdateProfileForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4">
-      {/* Name */}
-      <input
-        type="text"
-        placeholder="Enter name"
-        value={userName}
-        onChange={(e) => setUserName(e.target.value)}
-        className="border p-2 w-full"
-      />
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-4">
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Full Name</label>
+          <input
+            type="text"
+            placeholder="Enter your name"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            className="w-full bg-gray-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-primary/20 transition-all"
+          />
+        </div>
 
-      {/* Image URL */}
-      <input
-        type="text"
-        placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
-        value={userImage}
-        onChange={(e) => setUserImage(e.target.value)}
-        className="border p-2 w-full"
-      />
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Profile Image URL</label>
+          <input
+            type="text"
+            placeholder="https://example.com/photo.jpg"
+            value={userImage}
+            onChange={(e) => setUserImage(e.target.value)}
+            className="w-full bg-gray-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-primary/20 transition-all"
+          />
+        </div>
+      </div>
 
-      {/* Submit */}
-      <button type="submit" className="bg-blue-500 text-white px-4 py-2">
-        Update Profile
+      <button
+        type="submit"
+        className="w-full bg-primary hover:bg-primary-hover text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all"
+      >
+        Update Personal Info
       </button>
     </form>
   );

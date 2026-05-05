@@ -46,7 +46,7 @@ const Profile = () => {
             </h2>
             <p className="text-gray-500 text-sm sm:text-base">{email}</p>
 
-            <span className="inline-block mt-2 px-3 py-1 text-xs rounded-full bg-green-100 text-green-600">
+            <span className="inline-block mt-2 px-3 py-1 text-xs rounded-full bg-primary-hover text-white">
               Role: {role}
             </span>
           </div>
