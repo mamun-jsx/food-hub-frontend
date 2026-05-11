@@ -1,7 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { fetchAllUsers } from "../../../../../../service/admin-apdpoint";
 import UserTable from "@/components/ui/UserTable";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "@/components/shared/Loader";
 
 export interface IUser {
   id: string;
@@ -15,53 +17,25 @@ export interface IUser {
 }
 
 const Users = () => {
-  const [allusers, setUsers] = useState<{ data: IUser[] } | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: allusers, isLoading, isError, error } = useQuery({
+    queryKey: ["admin-users"],
+    queryFn: () => fetchAllUsers(),
+  });
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadUsers = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchAllUsers();
-        if (isMounted) {
-          setUsers(data);
-          setError(null);
-        }
-      } catch (err) {
-        if (isMounted) {
-          setError(
-            err instanceof Error ? err.message : "Failed to fetch users",
-          );
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadUsers();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  if (loading)
+  if (isLoading)
     return (
-      <div className="p-4">
-        <p>Loading users...</p>
+      <div className="p-4 flex justify-center">
+        <Loader />
       </div>
     );
-  if (error)
+
+  if (isError)
     return (
       <div className="p-4">
-        <p className="text-red-600">Error: {error}</p>
+        <p className="text-red-600">Error: {error instanceof Error ? error.message : "Failed to fetch users"}</p>
       </div>
     );
+
   if (!allusers?.data?.length)
     return (
       <div className="p-4">

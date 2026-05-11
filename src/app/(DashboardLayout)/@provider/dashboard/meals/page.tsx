@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 
 import { IMealForm, categorys } from "@/types/form.Types";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Edit2, Trash2, Plus } from "lucide-react";
 import Loader from "@/components/shared/Loader";
 import { deleteMealByProvider, getMealByProvider, updateMealByProvider } from "../../../../../../service/provider-apiEndPoint";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface Meal {
   id: string;
@@ -22,8 +23,7 @@ interface Meal {
 }
 
 const ProviderMealsView = () => {
-  const [meals, setMeals] = useState<Meal[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [editMeal, setEditMeal] = useState<Meal | null>(null);
 
   const [formData, setFormData] = useState<IMealForm>({
@@ -38,33 +38,43 @@ const ProviderMealsView = () => {
 
   const categories = Object.values(categorys);
 
-  const loadMeals = async () => {
-    try {
-      setLoading(true);
-      const res = await getMealByProvider();
-      setMeals(res?.meals || []);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data, isLoading } = useQuery({
+    queryKey: ["provider-meals"],
+    queryFn: () => getMealByProvider(),
+  });
 
-  useEffect(() => {
-    loadMeals();
-  }, []);
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteMealByProvider(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["provider-meals"] });
+      toast.success("Meal deleted successfully");
+    },
+    onError: (err) => {
+      console.error(err);
+      toast.error("Failed to delete meal");
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: IMealForm }) => updateMealByProvider(id, data),
+    onSuccess: (res) => {
+      if (res.success) {
+        queryClient.invalidateQueries({ queryKey: ["provider-meals"] });
+        setEditMeal(null);
+        toast.success("Meal updated successfully");
+      }
+    },
+    onError: (err) => {
+      console.error(err);
+      toast.error("Failed to update meal");
+    },
+  });
+
+  const meals = data?.meals || [];
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this meal?")) return;
-    const toastId = toast.loading("Deleting meal...");
-    try {
-      await deleteMealByProvider(id);
-      setMeals((prev) => prev.filter((m) => m.id !== id));
-      toast.success("Meal deleted successfully", { id: toastId });
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to delete meal", { id: toastId });
-    }
+    deleteMutation.mutate(id);
   };
 
   const openEdit = (meal: Meal) => {
@@ -97,24 +107,10 @@ const ProviderMealsView = () => {
 
   const handleUpdate = async () => {
     if (!editMeal) return;
-    const toastId = toast.loading("Updating meal...");
-    try {
-      const res = await updateMealByProvider(editMeal.id, formData);
-      if (res.success) {
-        // Optimistic update
-        setMeals((prev) =>
-          prev.map((m) => (m.id === editMeal.id ? { ...m, ...formData } : m)),
-        );
-        setEditMeal(null);
-        toast.success("Meal updated successfully", { id: toastId });
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to update meal", { id: toastId });
-    }
+    updateMutation.mutate({ id: editMeal.id, data: formData });
   };
 
-  if (loading)
+  if (isLoading)
     return (
       <div className="flex justify-center py-20">
         <Loader />
@@ -148,7 +144,7 @@ const ProviderMealsView = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {meals.map((meal) => (
+          {meals.map((meal: Meal) => (
             <MealCard key={meal.id} item={meal as any}>
               <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                 <Button
@@ -163,6 +159,7 @@ const ProviderMealsView = () => {
                   size="sm"
                   variant="outline"
                   onClick={() => handleDelete(meal.id)}
+                  disabled={deleteMutation.isPending}
                   className="rounded-full h-8 w-8 p-0 border-red-200 text-red-500 hover:bg-red-500 hover:text-white"
                 >
                   <Trash2 size={14} />
@@ -276,9 +273,10 @@ const ProviderMealsView = () => {
               </Button>
               <Button
                 onClick={handleUpdate}
+                disabled={updateMutation.isPending}
                 className="flex-1 bg-primary hover:bg-primary-hover text-white rounded-xl h-12 font-bold"
               >
-                Save Changes
+                {updateMutation.isPending ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </div>

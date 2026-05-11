@@ -1,5 +1,7 @@
+"use client";
+
 import React from "react";
-import { fetchAllOrdersServer } from "../../../../../../service/admin-apdpoint/server.apis";
+import { fetchAllAdminOrders } from "../../../../../../service/admin-apdpoint";
 import {
   Table,
   TableBody,
@@ -9,8 +11,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { User, MapPin, CreditCard, ShoppingBag, Calendar } from "lucide-react";
+import { User, CreditCard, Calendar } from "lucide-react";
 import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "@/components/shared/Loader";
 
 interface Meal {
   id: string;
@@ -41,8 +45,20 @@ interface Order {
   items: OrderItem[];
 }
 
-const AdminOrderView = async () => {
-  const orderData = await fetchAllOrdersServer();
+const AdminOrderView = () => {
+  const { data: orderData, isLoading } = useQuery({
+    queryKey: ["admin-orders"],
+    queryFn: () => fetchAllAdminOrders(),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="p-6 flex justify-center items-center min-h-[400px]">
+        <Loader />
+      </div>
+    );
+  }
+
   const orders = orderData?.data || [];
 
   return (
@@ -94,7 +110,7 @@ const AdminOrderView = async () => {
                   
                   <TableCell className="py-6 px-6">
                     <div className="flex -space-x-3 overflow-hidden">
-                      {order.items.map((item, idx) => (
+                      {order.items.slice(0, 3).map((item) => (
                         <div key={item.id} className="inline-block h-8 w-8 rounded-full ring-2 ring-white overflow-hidden bg-gray-100">
                           <Image 
                             src={item.meal.image} 

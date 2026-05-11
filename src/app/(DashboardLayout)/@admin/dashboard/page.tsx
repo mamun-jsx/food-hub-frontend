@@ -1,36 +1,25 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import toast from "react-hot-toast";
+import React, { useState } from "react";
 import { fetchMyProfile } from "../../../../../service/user-api-endpoint";
 import UpdateProfileForm from "@/components/modules/Form/UpdateProfileForm";
 import Loader from "@/components/shared/Loader";
 import Image from "next/image";
 import { Mail, Shield, Edit3, Users, ClipboardList, TrendingUp } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 
 const AdminDashboard = () => {
-  const [profile, setProfile] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
   const [showEdit, setShowEdit] = useState(false);
 
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const res = await fetchMyProfile();
-        if (res.success) {
-          setProfile(res.data);
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadProfile();
-  }, []);
+  const { data: profileRes, isLoading } = useQuery({
+    queryKey: ["my-profile"],
+    queryFn: () => fetchMyProfile(),
+  });
 
-  if (loading) return <div className="flex justify-center py-20"><Loader /></div>;
+  if (isLoading) return <div className="flex justify-center py-20"><Loader /></div>;
+
+  const profile = profileRes?.data;
 
   return (
     <div className="p-6 space-y-8">

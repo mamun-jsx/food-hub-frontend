@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import {
   createProviderProfile,
@@ -11,9 +11,11 @@ import { fetchMyProfile } from "../../../../../service/user-api-endpoint";
 import UpdateProfileForm from "@/components/modules/Form/UpdateProfileForm";
 import Loader from "@/components/shared/Loader";
 import Image from "next/image";
-import { Store, MapPin, Phone, Edit3, Mail, Shield, Utensils } from "lucide-react";
+import { Store, Mail, Shield, Utensils, Edit3 } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const ProviderDashboard = () => {
+  const queryClient = useQueryClient();
   const [restaurantForm, setRestaurantForm] = useState({
     restaurantName: "",
     description: "",
@@ -21,40 +23,50 @@ const ProviderDashboard = () => {
     phone: "",
   });
 
-  const [userProfile, setUserProfile] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [hasRestaurantProfile, setHasRestaurantProfile] = useState(false);
   const [showUserEdit, setShowUserEdit] = useState(false);
 
+  const { data: providerRes, isLoading: isProviderLoading } = useQuery({
+    queryKey: ["provider-profile"],
+    queryFn: () => fetchProviderProfile(),
+  });
+
+  const { data: userRes, isLoading: isUserLoading } = useQuery({
+    queryKey: ["my-profile"],
+    queryFn: () => fetchMyProfile(),
+  });
+
   useEffect(() => {
-    const loadAllData = async () => {
-      try {
-        const [resProfile, userRes] = await Promise.all([
-          fetchProviderProfile(),
-          fetchMyProfile()
-        ]);
+    if (providerRes?.success && providerRes?.profile) {
+      setRestaurantForm({
+        restaurantName: providerRes.profile.restaurantName || "",
+        description: providerRes.profile.description || "",
+        address: providerRes.profile.address || "",
+        phone: providerRes.profile.phone || "",
+      });
+    }
+  }, [providerRes]);
 
-        if (resProfile.success && resProfile.profile) {
-          setRestaurantForm({
-            restaurantName: resProfile.profile.restaurantName || "",
-            description: resProfile.profile.description || "",
-            address: resProfile.profile.address || "",
-            phone: resProfile.profile.phone || "",
-          });
-          setHasRestaurantProfile(true);
-        }
+  const createMutation = useMutation({
+    mutationFn: (data: any) => createProviderProfile(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["provider-profile"] });
+      toast.success("Profile Created ✅");
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || "Create failed");
+    },
+  });
 
-        if (userRes.success) {
-          setUserProfile(userRes.data);
-        }
-      } catch (err) {
-        console.log("Error fetching provider data");
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadAllData();
-  }, []);
+  const updateMutation = useMutation({
+    mutationFn: (data: any) => updateProviderProfileData(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["provider-profile"] });
+      toast.success("Restaurant updated ✅");
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || "Update failed");
+    },
+  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -65,32 +77,18 @@ const ProviderDashboard = () => {
     }));
   };
 
-  const handleRestaurantCreate = async () => {
-    const toastId = toast.loading("Creating restaurant profile...");
-    try {
-      const res = await createProviderProfile(restaurantForm);
-      if (res.success) {
-        toast.success("Profile Created ✅", { id: toastId });
-        setHasRestaurantProfile(true);
-      }
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Create failed", { id: toastId });
+  const handleRestaurantAction = () => {
+    if (providerRes?.profile) {
+      updateMutation.mutate(restaurantForm);
+    } else {
+      createMutation.mutate(restaurantForm);
     }
   };
 
-  const handleRestaurantUpdate = async () => {
-    const toastId = toast.loading("Updating restaurant details...");
-    try {
-      const res = await updateProviderProfileData(restaurantForm);
-      if (res.success) {
-        toast.success("Restaurant updated ✅", { id: toastId });
-      }
-    } catch (err: any) {
-        toast.error(err.response?.data?.message || "Update failed", { id: toastId });
-    }
-  };
+  if (isProviderLoading || isUserLoading) return <div className="flex justify-center py-20"><Loader /></div>;
 
-  if (loading) return <div className="flex justify-center py-20"><Loader /></div>;
+  const userProfile = userRes?.data;
+  const hasRestaurantProfile = !!providerRes?.profile;
 
   return (
     <div className="p-6 space-y-10">
@@ -207,10 +205,13 @@ const ProviderDashboard = () => {
             </div>
 
             <button
-              onClick={hasRestaurantProfile ? handleRestaurantUpdate : handleRestaurantCreate}
+              onClick={handleRestaurantAction}
+              disabled={createMutation.isPending || updateMutation.isPending}
               className="w-full bg-gray-900 hover:bg-primary text-white font-bold py-4 rounded-xl shadow-lg transition-all mt-4"
             >
-              {hasRestaurantProfile ? "Update Business Details" : "Launch Restaurant Profile"}
+              {createMutation.isPending || updateMutation.isPending 
+                ? "Processing..." 
+                : hasRestaurantProfile ? "Update Business Details" : "Launch Restaurant Profile"}
             </button>
           </div>
         </div>

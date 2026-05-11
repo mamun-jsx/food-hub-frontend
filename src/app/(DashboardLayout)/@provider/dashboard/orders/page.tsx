@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   fetchProviderOrders,
   updateOrderStatus,
@@ -15,8 +15,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, CreditCard, ShoppingBag, ChevronDown } from "lucide-react";
+import { MapPin, CreditCard, ChevronDown } from "lucide-react";
 import Image from "next/image";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 export interface IMeal {
   id: string;
@@ -49,36 +51,32 @@ type Order = {
 const OrderStatusList = ["PLACED", "PREPARING", "READY", "DELIVERED", "CANCELLED"];
 
 export default function ProviderViewOrders() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const data = await fetchProviderOrders();
-        setOrders(data.data || []);
-      } catch (err) {
-        console.log("Error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data, isLoading } = useQuery({
+    queryKey: ["provider-orders"],
+    queryFn: () => fetchProviderOrders(),
+  });
 
-    loadData();
-  }, []);
+  const statusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: string }) => updateOrderStatus(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["provider-orders"] });
+      toast.success("Order status updated");
+    },
+    onError: (err) => {
+      console.error(err);
+      toast.error("Failed to update status");
+    },
+  });
 
-  const handleStatusChange = async (id: string, status: string) => {
-    try {
-      await updateOrderStatus(id, status);
-      setOrders((prev) =>
-        prev.map((order) => (order.id === id ? { ...order, status } : order))
-      );
-    } catch (err) {
-      console.log(err);
-    }
+  if (isLoading) return <div className="flex justify-center py-20"><Loader /></div>;
+
+  const orders: Order[] = data?.data || [];
+
+  const handleStatusChange = (id: string, status: string) => {
+    statusMutation.mutate({ id, status });
   };
-
-  if (loading) return <div className="flex justify-center py-20"><Loader /></div>;
 
   return (
     <div className="p-6">
@@ -155,6 +153,7 @@ export default function ProviderViewOrders() {
                         <select
                         value={order.status}
                         onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                        disabled={statusMutation.isPending}
                         className={`appearance-none w-full outline-none rounded-xl px-4 py-2.5 text-xs font-bold border-2 transition-all cursor-pointer ${
                             order.status === "DELIVERED" 
                             ? "bg-emerald-50 border-emerald-100 text-emerald-600" 

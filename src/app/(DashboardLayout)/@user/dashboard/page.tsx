@@ -1,36 +1,24 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import React, { useState } from "react";
 import { fetchMyProfile } from "../../../../../service/user-api-endpoint";
 import UpdateProfileForm from "@/components/modules/Form/UpdateProfileForm";
 import Loader from "@/components/shared/Loader";
 import Image from "next/image";
-import { User, Mail, Shield, Edit3 } from "lucide-react";
+import { Mail, Shield, Edit3 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 const UserDashboard = () => {
-  const [profile, setProfile] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
   const [showEdit, setShowEdit] = useState(false);
 
-  const loadProfile = async () => {
-    try {
-      const res = await fetchMyProfile();
-      if (res.success) {
-        setProfile(res.data);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: profileRes, isLoading } = useQuery({
+    queryKey: ["my-profile"],
+    queryFn: () => fetchMyProfile(),
+  });
 
-  useEffect(() => {
-    loadProfile();
-  }, []);
+  if (isLoading) return <div className="flex justify-center py-20"><Loader /></div>;
 
-  if (loading) return <div className="flex justify-center py-20"><Loader /></div>;
+  const profile = profileRes?.data;
 
   return (
     <div className="p-6 space-y-8">

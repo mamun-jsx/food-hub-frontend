@@ -8,8 +8,10 @@ import toast from "react-hot-toast";
 
 import { addMealByProvider } from "../../../../service/provider-apiEndPoint";
 import { IMealForm, categorys } from "@/types/form.Types";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function AddProductForm() {
+  const queryClient = useQueryClient();
   const initialState: IMealForm = {
     name: "",
     category: categorys.PASTA,
@@ -21,6 +23,23 @@ export function AddProductForm() {
   };
 
   const [form, setForm] = useState<IMealForm>(initialState);
+
+  const mutation = useMutation({
+    mutationFn: (payload: IMealForm) => addMealByProvider(payload),
+    onSuccess: (res) => {
+      if (res?.success) {
+        toast.success("Data is saved ✅");
+        queryClient.invalidateQueries({ queryKey: ["provider-meals"] });
+        resetForm();
+      } else {
+        toast.error("Failed to save data");
+      }
+    },
+    onError: (err: any) => {
+      console.log("ERROR:", err?.response?.data || err.message);
+      toast.error("Something went wrong");
+    },
+  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -40,7 +59,7 @@ export function AddProductForm() {
     setForm(initialState);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const payload = {
@@ -51,7 +70,7 @@ export function AddProductForm() {
       image: form.image?.trim() || undefined,
       cookingTime: Number(form.cookingTime || 0),
       deliveryTime: Number(form.deliveryTime || 0),
-    };
+    } as IMealForm;
 
     // validation
     if (!payload.name || !payload.description || !payload.price) {
@@ -64,19 +83,7 @@ export function AddProductForm() {
       return;
     }
 
-    try {
-      const res = await addMealByProvider(payload);
-
-      if (res?.success) {
-        toast.success("Data is saved ✅");
-        resetForm(); // clear form after success
-      } else {
-        toast.error("Failed to save data");
-      }
-    } catch (err: any) {
-      console.log("ERROR:", err?.response?.data || err.message);
-      toast.error("Something went wrong");
-    }
+    mutation.mutate(payload);
   };
 
   return (
@@ -169,9 +176,10 @@ export function AddProductForm() {
       {/* SUBMIT */}
       <Button
         type="submit"
+        disabled={mutation.isPending}
         className="w-full hover:bg-primary-hover cursor-pointer"
       >
-        Add Meal
+        {mutation.isPending ? "Adding..." : "Add Meal"}
       </Button>
     </form>
   );

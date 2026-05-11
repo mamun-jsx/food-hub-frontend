@@ -1,8 +1,8 @@
 "use client";
 
+import React from "react";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import Loader from "@/components/shared/Loader";
 
 import {
@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Eye, Clock, MapPin, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fetchAllOrderForUser } from "../../../../../../service/user-api-endpoint";
+import { useQuery } from "@tanstack/react-query";
 
 interface Meal {
   id: string;
@@ -48,33 +49,21 @@ interface Order {
 }
 
 const MyOrder = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["user-orders"],
+    queryFn: () => fetchAllOrderForUser(),
+  });
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchAllOrderForUser();
-        setOrders(data?.data || []);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrders();
-  }, []);
-
-  if (loading) return <Loader />;
-  if (error) return (
+  if (isLoading) return <div className="flex justify-center py-20"><Loader /></div>;
+  
+  if (isError) return (
     <div className="p-10 text-center bg-red-50 rounded-3xl border border-red-100 m-6">
-      <p className="text-red-500 font-bold text-lg">Error: {error}</p>
+      <p className="text-red-500 font-bold text-lg">Error: {error instanceof Error ? error.message : "Failed to fetch orders"}</p>
       <Button onClick={() => window.location.reload()} variant="outline" className="mt-4">Try Again</Button>
     </div>
   );
+
+  const orders: Order[] = data?.data || [];
 
   return (
     <div className="p-6">
