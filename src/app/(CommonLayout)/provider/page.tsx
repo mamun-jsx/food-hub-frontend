@@ -1,5 +1,9 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
 import { fetchAllProvider } from "../../../../service/user-api-endpoint";
 import ProviderCard from "@/components/shared/ProviderCard";
+import Loader from "@/components/shared/Loader";
 
 interface User {
   name: string;
@@ -17,8 +21,21 @@ interface Provider {
   user: User;
 }
 
-const Providers = async () => {
-  const allProviders = await fetchAllProvider();
+const Providers = () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ["providers"],
+    queryFn: () => fetchAllProvider(),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
+  const allProviders = data?.provider || [];
 
   return (
     <div className="min-h-screen bg-[#FFFCF7] px-6 py-20">
@@ -35,7 +52,7 @@ const Providers = async () => {
 
         {/* Grid */}
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {allProviders?.provider?.map((p: Provider) => (
+          {allProviders.map((p: Provider) => (
             <ProviderCard key={p.id} provider={p} />
           ))}
         </div>

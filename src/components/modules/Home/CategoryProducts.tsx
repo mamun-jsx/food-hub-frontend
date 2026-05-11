@@ -22,39 +22,23 @@ const categories = [
   "biryani",
 ];
 
+import { useQuery } from "@tanstack/react-query";
+import { fetchMeal } from "../../../../service/user-api-endpoint";
+
 export default function CategoryProducts() {
   const router = useRouter();
   const { addToCart } = useCart();
   const { data: session } = useAuth();
   const userRole = session?.user?.role;
-  const [products, setProducts] = useState<IMeal[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<IMeal[]>([]);
   const [activeCategory, setActiveCategory] = useState("all");
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchMeals = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/meals`,
-          {
-            cache: "no-store",
-          }
-        );
-        if (res.ok) {
-          const data = await res.json();
-          const mealList = data?.meal || [];
-          setProducts(mealList);
-          setFilteredProducts(mealList.slice(0, 4));
-        }
-      } catch (error) {
-        console.error("Failed to fetch meals:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchMeals();
-  }, []);
+  const { data, isLoading } = useQuery({
+    queryKey: ["meals"],
+    queryFn: () => fetchMeal(),
+  });
+
+  const products: IMeal[] = data?.meal || [];
 
   useEffect(() => {
     if (activeCategory === "all") {
@@ -67,7 +51,7 @@ export default function CategoryProducts() {
     }
   }, [activeCategory, products]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <section className="py-24 flex justify-center items-center">
         <Loader />

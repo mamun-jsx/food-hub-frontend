@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   fetchProviderWithProduct,
@@ -6,22 +8,36 @@ import {
 import MealCard from "@/components/shared/MealCard";
 import { IMeal } from "@/types/meal.Type";
 import { MapPin, Phone, Utensils } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "@/components/shared/Loader";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-const page = async ({ params }: PageProps) => {
-  const { id } = await params;
-  
-  // Parallel fetch for better performance
-  const [profileRes, productsRes] = await Promise.allSettled([
-    getProfileById(id),
-    fetchProviderWithProduct(id),
-  ]);
+const ProviderDetailsPage = ({ params }: PageProps) => {
+  const { id } = React.use(params);
 
-  const providerProfile = profileRes.status === "fulfilled" ? profileRes.value : null;
-  const providerProducts = productsRes.status === "fulfilled" ? productsRes.value : null;
+  const { data: profileData, isLoading: isProfileLoading } = useQuery({
+    queryKey: ["provider-profile", id],
+    queryFn: () => getProfileById(id),
+  });
+
+  const { data: productsData, isLoading: isProductsLoading } = useQuery({
+    queryKey: ["provider-products", id],
+    queryFn: () => fetchProviderWithProduct(id),
+  });
+
+  if (isProfileLoading || isProductsLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
+  const providerProfile = profileData;
+  const providerProducts = productsData;
 
   if (!providerProfile || !providerProfile.success) {
     return (
@@ -36,7 +52,7 @@ const page = async ({ params }: PageProps) => {
 
   const { restaurantName, address, phone, description } = providerProfile.profile;
   const meals = providerProducts?.data || [];
-  
+
   return (
     <div className="min-h-screen bg-[#FFFCF7] px-4 py-16">
       <div className="max-w-7xl mx-auto">
@@ -101,4 +117,4 @@ const page = async ({ params }: PageProps) => {
   );
 };
 
-export default page;
+export default ProviderDetailsPage;

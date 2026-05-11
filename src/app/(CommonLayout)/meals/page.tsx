@@ -1,36 +1,38 @@
+"use client";
+
+import React from "react";
 import MealCard from "@/components/shared/MealCard";
 import { IMeal } from "@/types/meal.Type";
+import { useQuery } from "@tanstack/react-query";
+import { fetchMeal } from "../../../../service/user-api-endpoint";
+import Loader from "@/components/shared/Loader";
 
-export default async function ProductPage({
+export default function ProductPage({
   searchParams,
 }: {
   searchParams: Promise<{ category?: string; search?: string }>;
 }) {
-  // ✅ REQUIRED in Next 15+
-  const params = await searchParams;
-
+  const params = React.use(searchParams);
   const category = params.category || "";
   const search = params.search || "";
 
-  const query = new URLSearchParams();
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["meals", category, search],
+    queryFn: () => fetchMeal(search, category),
+  });
 
-  if (category) query.set("category", category);
-  if (search) query.set("search", search);
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
-  console.log(query.toString(), "✅ query string");
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/meals?${query.toString()}`,
-    {
-      cache: "no-store",
-    },
-  );
-
-  if (!res.ok) {
+  if (isError) {
     return <h3 className="text-center my-10">Something went wrong</h3>;
   }
 
-  const data = await res.json();
   const mealLists: IMeal[] = data?.meal || [];
 
   if (mealLists.length === 0) {

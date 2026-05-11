@@ -15,33 +15,18 @@ import { IMeal } from "@/types/meal.Type";
 import MealCard from "@/components/shared/MealCard";
 import Loader from "@/components/shared/Loader";
 
+import { useQuery } from "@tanstack/react-query";
+import { fetchMeal } from "../../../../service/user-api-endpoint";
+
 export default function FeaturesProducts() {
-  const [products, setProducts] = useState<IMeal[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = useQuery({
+    queryKey: ["meals"],
+    queryFn: () => fetchMeal(),
+  });
 
-  useEffect(() => {
-    const fetchMeals = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/meals`,
-          {
-            cache: "no-store",
-          }
-        );
-        if (res.ok) {
-          const data = await res.json();
-          setProducts(data?.meal || []);
-        }
-      } catch (error) {
-        console.error("Failed to fetch meals:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchMeals();
-  }, []);
+  const products = data?.meal || [];
 
-  if (loading) {
+  if (isLoading) {
     return (
       <section className="py-24 bg-[#fbf9f5] flex justify-center items-center">
         <Loader />

@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { fetchProductById } from "../../../../../service/user-api-endpoint";
 import { IMeal, IReview } from "@/types/meal.Type";
@@ -6,15 +8,30 @@ import { Badge } from "@/components/ui/badge";
 import { Star, Clock, ArrowLeft, Navigation } from "lucide-react";
 import Link from "next/link";
 import AddToCartButton from "@/components/modules/UserAction/AddToCartButton";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "@/components/shared/Loader";
 
 interface PageProps {
-  params: Promise<{ id: string }>; // In Next 15, params is a Promise
+  params: Promise<{ id: string }>;
 }
 
-const ProductDetailsPage = async ({ params }: PageProps) => {
-  const { id } = await params;
-  const response = await fetchProductById(id);
-  const meal: IMeal = response.data;
+const ProductDetailsPage = ({ params }: PageProps) => {
+  const { id } = React.use(params);
+  
+  const { data: response, isLoading } = useQuery({
+    queryKey: ["meal", id],
+    queryFn: () => fetchProductById(id),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
+  const meal: IMeal = response?.data;
 
   if (!meal) return <div className="text-center py-20">Meal not found</div>;
 
