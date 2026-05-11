@@ -5,7 +5,7 @@ import MealCard from "@/components/shared/MealCard";
 import { IMeal } from "@/types/meal.Type";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMeal } from "../../../../service/user-api-endpoint";
-import Loader from "@/components/shared/Loader";
+import MealCardSkeleton from "@/components/shared/skeletons/MealCardSkeleton";
 
 export default function ProductPage({
   searchParams,
@@ -23,8 +23,10 @@ export default function ProductPage({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader />
+      <div className="py-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 w-11/12 max-w-7xl mx-auto">
+        {[...Array(8)].map((_, i) => (
+          <MealCardSkeleton key={i} />
+        ))}
       </div>
     );
   }

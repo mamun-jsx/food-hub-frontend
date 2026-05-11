@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProvider } from "../../../../service/user-api-endpoint";
 import ProviderCard from "@/components/shared/ProviderCard";
-import Loader from "@/components/shared/Loader";
+import ProviderCardSkeleton from "@/components/shared/skeletons/ProviderCardSkeleton";
 
 interface User {
   name: string;
@@ -29,8 +29,18 @@ const Providers = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader />
+      <div className="min-h-screen bg-[#FFFCF7] px-6 py-20">
+        <div className="max-w-7xl mx-auto">
+          <header className="mb-16 text-center md:text-left">
+            <div className="h-12 w-64 bg-gray-200 animate-pulse rounded-lg mb-4 mx-auto md:mx-0"></div>
+            <div className="h-6 w-full max-w-xl bg-gray-200 animate-pulse rounded-lg mx-auto md:mx-0"></div>
+          </header>
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {[...Array(8)].map((_, i) => (
+              <ProviderCardSkeleton key={i} />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
