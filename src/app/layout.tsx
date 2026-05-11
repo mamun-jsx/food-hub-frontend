@@ -23,6 +23,7 @@ export const metadata: Metadata = {
 import { CartProvider } from "@/context/CartContext";
 import { Toaster } from "react-hot-toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import TanstackProvider from "@/providers/TanstackProvider";
 
 export default function RootLayout({
   children,
@@ -34,12 +35,14 @@ export default function RootLayout({
       <body
         className={`bg-background ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <TooltipProvider>
-          <CartProvider>
-            <Toaster position="top-right" />
-            {children}
-          </CartProvider>
-        </TooltipProvider>
+        <TanstackProvider>
+          <TooltipProvider>
+            <CartProvider>
+              <Toaster position="top-right" />
+              {children}
+            </CartProvider>
+          </TooltipProvider>
+        </TanstackProvider>
       </body>
     </html>
   );
