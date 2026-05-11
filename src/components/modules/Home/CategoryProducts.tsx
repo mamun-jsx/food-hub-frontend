@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { IMeal } from "@/types/meal.Type";
 import { useCart } from "@/context/CartContext";
 import { cn } from "@/lib/utils";
-import Loader from "@/components/shared/Loader";
 import { useAuth } from "@/hooks/useAuth";
 import toast from "react-hot-toast";
+import MealCardSkeleton from "@/components/shared/skeletons/MealCardSkeleton";
 
 const categories = [
   "all",
@@ -30,9 +30,7 @@ export default function CategoryProducts() {
   const { addToCart } = useCart();
   const { data: session } = useAuth();
   const userRole = session?.user?.role;
-  const [filteredProducts, setFilteredProducts] = useState<IMeal[]>([]);
   const [activeCategory, setActiveCategory] = useState("all");
-
   const { data, isLoading } = useQuery({
     queryKey: ["meals"],
     queryFn: () => fetchMeal(),
@@ -40,21 +38,30 @@ export default function CategoryProducts() {
 
   const products: IMeal[] = data?.meal || [];
 
-  useEffect(() => {
-    if (activeCategory === "all") {
-      setFilteredProducts(products.slice(0, 4));
-    } else {
-      const filtered = products.filter(
+  const filteredProducts = activeCategory === "all" 
+    ? products.slice(0, 4) 
+    : products.filter(
         (p) => p.category.toLowerCase() === activeCategory.toLowerCase()
-      );
-      setFilteredProducts(filtered.slice(0, 4));
-    }
-  }, [activeCategory, products]);
+      ).slice(0, 4);
 
   if (isLoading) {
     return (
-      <section className="py-24 flex justify-center items-center">
-        <Loader />
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="text-center mb-16">
+            <div className="h-12 w-64 bg-gray-200 animate-pulse rounded-lg mx-auto mb-6"></div>
+            <div className="flex flex-wrap justify-center gap-4 mt-8">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-10 w-24 bg-gray-100 animate-pulse rounded-full"></div>
+              ))}
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[...Array(4)].map((_, i) => (
+              <MealCardSkeleton key={i} />
+            ))}
+          </div>
+        </div>
       </section>
     );
   }
