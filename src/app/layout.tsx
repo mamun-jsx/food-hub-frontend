@@ -24,6 +24,7 @@ import { CartProvider } from "@/context/CartContext";
 import { Toaster } from "react-hot-toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import TanstackProvider from "@/providers/TanstackProvider";
+import ChatAssistant from "@/components/shared/ChatAssistant";
 
 export default function RootLayout({
   children,
@@ -39,6 +40,7 @@ export default function RootLayout({
           <TooltipProvider>
             <CartProvider>
               <Toaster position="top-right" />
+              <ChatAssistant />
               {children}
             </CartProvider>
           </TooltipProvider>

@@ -24,7 +24,7 @@ export default function FeaturesProducts() {
     queryFn: () => fetchMeal(),
   });
 
-  const products = data?.meal || [];
+  const products: IMeal[] = data?.meal || [];
 
   if (isLoading) {
     return (

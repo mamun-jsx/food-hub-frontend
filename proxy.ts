@@ -1,21 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export function middleware(request: NextRequest) {
-  const session = request.cookies.get("better-auth.session")?.value;
+export function proxy(request: NextRequest) {
+  const token = request.cookies.get("accessToken")?.value;
+  const { pathname } = request.nextUrl;
 
-  const protectedRoutes = ["/dashboard", "/profile"];
+  const isProtectedRoute =
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/profile") ||
+    pathname.startsWith("/checkout");
 
-  const isProtected = protectedRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route),
-  );
+  const isAuthRoute = pathname.startsWith("/login") || pathname.startsWith("/register");
 
-  if (isProtected && !session) {
+  // If no token and trying to access protected routes, redirect to login
+  if (!token && isProtectedRoute) {
     return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  // If token exists and trying to access auth pages, redirect to home
+  if (token && isAuthRoute) {
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/profile/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/profile/:path*",
+    "/checkout/:path*",
+    "/login",
+    "/register",
+  ],
 };
