@@ -1,34 +1,34 @@
 # FoodHub Frontend 🍽️
 
-A premium, artisanal web application for food discovery and ordering. FoodHub connects culinary enthusiasts with local providers through a state-of-the-art, responsive interface.
+A premium, artisanal web application for food discovery and ordering. FoodHub connects culinary enthusiasts with local providers through a state-of-the-art, high-performance interface.
 
 ## 🔗 Quick Links
 
 - **Live Site**: [https://food-hub-frontend-tan.vercel.app](https://food-hub-frontend-tan.vercel.app)
-- **Backend API**: [https://food-hub-backend-pg-ts.vercel.app](https://food-hub-backend-pg-ts.vercel.app)
-- **Backend Repository**: [https://github.com/mamun-jsx/food-hub-backend-pg-ts](https://github.com/mamun-jsx/food-hub-backend-pg-ts)
+- **Backend Code Repo**: [https://github.com/mamun-jsx/food-hub-backend-pg-ts](https://github.com/mamun-jsx/food-hub-backend-pg-ts)
+- **Backend API Live**: [https://food-hub-backend-pg-ts.vercel.app](https://food-hub-backend-pg-ts.vercel.app)
 
+## ✨ Advanced Features
 
-## ✨ Premium Features
-
-- **Artisanal Design**: A warm, high-end aesthetic built with the "Artisan" theme (`#FFFCF7` and `#F3BC58`).
+- **SSR & Performance (React 19)**: Leverages Server-Side Rendering (SSR) and streaming with React 19's latest patterns for lightning-fast initial loads and SEO optimization.
+- **Optimistic UI**: Experience instant feedback with `useOptimistic` for review submissions and cart interactions, providing a professional and fluid feel.
+- **Verified Review System**: A secure review flow where only customers with confirmed, delivered orders can leave feedback via their personalized dashboard.
+- **Artisanal Design System**: A warm, high-end aesthetic built with custom color tokens and premium skeleton loaders for a smooth perceived performance.
 - **Triple-Role Dashboards**:
-  - **User**: Order history, live tracking, and profile management.
-  - **Provider**: Product management (Add/Update/Delete), order processing, and restaurant profiling.
-  - **Admin**: Global platform statistics, user management, and order monitoring.
-- **Dynamic Cart System**: Seamless cart management with persistent local state.
-- **Robust Searching**: Filter meals by category or search by keywords with instant results.
-- **Provider Identity**: Dedicated public profiles for restaurants showcasing their unique menu and story.
+  - **User**: Manage profile, track order history, and leave verified reviews.
+  - **Provider**: Professional tools for menu management, business profiling, and real-time order status updates.
+  - **Admin**: Comprehensive platform oversight with global stats and user management.
+- **Smart Filtering & Searching**: Sophisticated meal discovery with category-based filtering, advanced sorting (Price, Name, Date), and debounced search.
 
 ## 🚀 Technologies
 
-- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **State Management**: React Context API (Cart) & Custom Hooks (Auth)
+- **Framework**: [Next.js 16 (Canary)](https://nextjs.org/) (App Router & Server Components)
+- **Library**: [React 19](https://react.dev/)
+- **State Management**: TanStack Query v5 (Suspense Integration) & Context API
+- **Styling**: Tailwind CSS 4.0
 - **UI Components**: Shadcn/UI & Lucide React
 - **Notifications**: React Hot Toast
-- **API Client**: Axios with interceptors
+- **API Client**: Axios with interceptors for JWT handling
 
 ## 🛠️ Setup Instructions
 
@@ -55,22 +55,12 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ## 📁 Project Structure
 
-- `src/app`: Next.js App Router pages and layouts.
-- `src/components`:
-  - `modules`: Feature-specific components (Forms, Dashboard modules).
-  - `shared`: Reusable global components (Navbar, Footer, MealCard).
-  - `ui`: Base UI components (Shadcn).
-- `src/context`: Global state providers.
-- `src/hooks`: Custom React hooks for Auth and utility.
-- `service/`: API endpoint definitions and service layer.
-
-## 🎨 Design System
-
-FoodHub uses a curated color palette to evoke warmth and quality:
-- **Primary**: `#F3BC58` (Golden Harvest)
-- **Hover**: `#D9901C` (Deep Honey)
-- **Background**: `#FFFCF7` (Creamy Parchment)
-- **Dark Elements**: `#111827` (Rich Obsidian)
+- `src/app`: Next.js App Router with specialized layouts for Auth and Dashboard.
+- `src/components`: 
+  - `modules`: Feature-rich components (Home sections, Dashboard modules).
+  - `shared`: Global reusable components (Navbar, Skeleton Grids, MealCards).
+- `service/`: Modular API service layer organized by domain (Auth, Provider, User).
+- `src/context`: Global state management for Cart and Theme.
 
 ---
-Developed by **[Abdullah Al Mamun](https://github.com/mamun-jsx)**
+Developed with ❤️ by **[Abdullah Al Mamun](https://github.com/mamun-jsx)**
