@@ -32,8 +32,8 @@ export default function CategoryProducts() {
   const userRole = session?.user?.role;
   const [activeCategory, setActiveCategory] = useState("all");
   const { data, isLoading } = useQuery({
-    queryKey: ["meals"],
-    queryFn: () => fetchMeal(),
+    queryKey: ["meals-categories"],
+    queryFn: () => fetchMeal({ limit: 50 }),
   });
 
   const products: IMeal[] = data?.meal || [];
@@ -64,6 +64,10 @@ export default function CategoryProducts() {
         </div>
       </section>
     );
+  }
+
+  if (products.length === 0) {
+    // No items to show
   }
 
   return (

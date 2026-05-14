@@ -20,8 +20,8 @@ import { fetchMeal } from "../../../../service/user-api-endpoint";
 
 export default function FeaturesProducts() {
   const { data, isLoading } = useQuery({
-    queryKey: ["meals"],
-    queryFn: () => fetchMeal(),
+    queryKey: ["meals-featured"],
+    queryFn: () => fetchMeal({ limit: 20 }),
   });
 
   const products: IMeal[] = data?.meal || [];

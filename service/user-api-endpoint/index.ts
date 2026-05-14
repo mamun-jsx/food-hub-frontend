@@ -2,8 +2,25 @@ import axiosApi from "@/lib/axiosInstance";
 import { IFormReviewData, IProfileUpdateForm } from "@/types/form.Types";
 
 // get all meals for user
-export const fetchMeal = async (search = "", category = "") => {
-  const response = await axiosApi.get(`/api/meals?search=${search}&category=${category}`);
+export const fetchMeal = async (params: {
+  search?: string;
+  category?: string;
+  sortBy?: string;
+  sortOrder?: string;
+  page?: number;
+  limit?: number;
+} = {}) => {
+  const { search, category, sortBy, sortOrder, page = 1, limit = 10 } = params;
+  const queryParams = new URLSearchParams();
+  
+  if (search) queryParams.set("search", search);
+  if (category && category !== "All") queryParams.set("category", category);
+  if (sortBy) queryParams.set("sortBy", sortBy);
+  if (sortOrder) queryParams.set("sortOrder", sortOrder);
+  queryParams.set("page", page.toString());
+  queryParams.set("limit", limit.toString());
+
+  const response = await axiosApi.get(`/api/meals?${queryParams.toString()}`);
   return response.data;
 };
 
