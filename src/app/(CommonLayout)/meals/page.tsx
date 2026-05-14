@@ -1,15 +1,10 @@
-"use client";
-
-import React from "react";
-import MealCard from "@/components/shared/MealCard";
-import { IMeal } from "@/types/meal.Type";
-import { useQuery } from "@tanstack/react-query";
-import { fetchMeal } from "../../../../service/user-api-endpoint";
-import MealCardSkeleton from "@/components/shared/skeletons/MealCardSkeleton";
+import React, { Suspense } from "react";
 import MealsFilters from "@/components/modules/Meals/MealsFilters";
-import Pagination from "@/components/shared/Pagination";
+import MealsList from "@/components/modules/Meals/MealsList";
+import MealCardSkeleton from "@/components/shared/skeletons/MealCardSkeleton";
 
-export default function ProductPage({
+// This is now a Server Component
+export default async function ProductPage({
   searchParams,
 }: {
   searchParams: Promise<{
@@ -20,37 +15,20 @@ export default function ProductPage({
     page?: string;
   }>;
 }) {
-  const params = React.use(searchParams);
+  const params = await searchParams;
   const category = params.category === "All" ? "" : params.category || "";
   const search = params.search || "";
   const sortBy = params.sortBy || "name";
   const sortOrder = params.sortOrder || "asc";
-  const page = parseInt(params.page || "1");
+  const pageNum = parseInt(params.page || "1");
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["meals", category, search, sortBy, sortOrder, page],
-    queryFn: () =>
-      fetchMeal({
-        category,
-        search,
-        sortBy,
-        sortOrder,
-        page,
-        limit: 8,
-      }),
-  });
-
-  if (isError) {
-    return (
-      <div className="py-20 text-center">
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">Something went wrong</h3>
-        <p className="text-gray-500">Please try again later.</p>
-      </div>
-    );
-  }
-
-  const mealLists: IMeal[] = data?.meal || [];
-  const totalPages = data?.totalPages || 1;
+  const filterParams = {
+    category,
+    search,
+    sortBy,
+    sortOrder,
+    page: pageNum,
+  };
 
   return (
     <div className="bg-[#fbf9f5] min-h-screen py-16">
@@ -62,28 +40,19 @@ export default function ProductPage({
 
         <MealsFilters />
 
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {[...Array(8)].map((_, i) => (
-              <MealCardSkeleton key={i} />
-            ))}
-          </div>
-        ) : mealLists.length === 0 ? (
-          <div className="py-20 text-center bg-white rounded-3xl border border-dashed border-gray-300">
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Meals Found</h3>
-            <p className="text-gray-500">Try adjusting your filters or search query.</p>
-          </div>
-        ) : (
-          <>
+        {/* Using Suspense for the meal list */}
+        <Suspense
+          key={JSON.stringify(filterParams)}
+          fallback={
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {mealLists.map((item: IMeal) => (
-                <MealCard key={item.id} item={item} />
+              {[...Array(8)].map((_, i) => (
+                <MealCardSkeleton key={i} />
               ))}
             </div>
-            
-            <Pagination totalPages={totalPages} currentPage={page} />
-          </>
-        )}
+          }
+        >
+          <MealsList params={filterParams} />
+        </Suspense>
       </div>
     </div>
   );

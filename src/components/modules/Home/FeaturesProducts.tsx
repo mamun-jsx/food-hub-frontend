@@ -15,37 +15,17 @@ import { IMeal } from "@/types/meal.Type";
 import MealCard from "@/components/shared/MealCard";
 import MealCardSkeleton from "@/components/shared/skeletons/MealCardSkeleton";
 
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { fetchMeal } from "../../../../service/user-api-endpoint";
 
 export default function FeaturesProducts() {
-  const { data, isLoading } = useQuery({
+  const { data } = useSuspenseQuery({
     queryKey: ["meals-featured"],
     queryFn: () => fetchMeal({ limit: 20 }),
   });
 
   const products: IMeal[] = data?.meal || [];
 
-  if (isLoading) {
-    return (
-      <section className="py-24 bg-[#fbf9f5]">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-16 gap-6">
-            <div className="h-10 w-48 bg-gray-200 animate-pulse rounded-lg"></div>
-            <div className="flex gap-4">
-              <div className="w-10 h-10 bg-gray-200 animate-pulse rounded-full"></div>
-              <div className="w-10 h-10 bg-gray-200 animate-pulse rounded-full"></div>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {[...Array(4)].map((_, i) => (
-              <MealCardSkeleton key={i} />
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
 
   if (!products || products.length === 0) {
     return null; // Don't show the section if there are no products

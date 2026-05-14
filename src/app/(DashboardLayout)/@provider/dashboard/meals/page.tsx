@@ -235,6 +235,31 @@ const ProviderMealsView = () => {
                 />
               </div>
 
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">
+                  Dish Image URL
+                </label>
+                <div className="flex gap-3 items-center">
+                  <input
+                    name="image"
+                    value={formData.image}
+                    onChange={handleChange}
+                    className="flex-1 bg-gray-50 border-none rounded-xl p-3 focus:ring-2 focus:ring-primary/20 transition-all"
+                    placeholder="https://example.com/image.jpg"
+                  />
+                  {formData.image && (
+                    <div className="w-12 h-12 rounded-lg overflow-hidden border shrink-0">
+                      <img 
+                        src={formData.image} 
+                        alt="Preview" 
+                        className="w-full h-full object-cover"
+                        onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/150'; }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">

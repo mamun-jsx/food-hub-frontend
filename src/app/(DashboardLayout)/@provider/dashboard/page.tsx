@@ -146,7 +146,10 @@ const ProviderDashboard = () => {
 
           {showUserEdit && (
             <div className="mt-8 pt-8 border-t border-gray-100 animate-in fade-in slide-in-from-top-2 duration-300">
-               <UpdateProfileForm />
+               <UpdateProfileForm 
+                 currentName={userProfile?.name} 
+                 currentImage={userProfile?.image} 
+               />
             </div>
           )}
         </div>

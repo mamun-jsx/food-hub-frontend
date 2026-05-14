@@ -75,7 +75,10 @@ const UserDashboard = () => {
           {showEdit && (
             <div className="mt-10 pt-8 border-t border-gray-100 animate-in slide-in-from-top-4 duration-300">
                <h3 className="text-lg font-bold mb-6">Update Profile Information</h3>
-               <UpdateProfileForm />
+               <UpdateProfileForm 
+                 currentName={profile?.name} 
+                 currentImage={profile?.image} 
+               />
             </div>
           )}
         </div>

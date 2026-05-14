@@ -22,7 +22,7 @@ const categories = [
   "biryani",
 ];
 
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { fetchMeal } from "../../../../service/user-api-endpoint";
 
 export default function CategoryProducts() {
@@ -31,7 +31,7 @@ export default function CategoryProducts() {
   const { data: session } = useAuth();
   const userRole = session?.user?.role;
   const [activeCategory, setActiveCategory] = useState("all");
-  const { data, isLoading } = useQuery({
+  const { data } = useSuspenseQuery({
     queryKey: ["meals-categories"],
     queryFn: () => fetchMeal({ limit: 50 }),
   });
@@ -44,27 +44,6 @@ export default function CategoryProducts() {
         (p) => p.category.toLowerCase() === activeCategory.toLowerCase()
       ).slice(0, 4);
 
-  if (isLoading) {
-    return (
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="text-center mb-16">
-            <div className="h-12 w-64 bg-gray-200 animate-pulse rounded-lg mx-auto mb-6"></div>
-            <div className="flex flex-wrap justify-center gap-4 mt-8">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-10 w-24 bg-gray-100 animate-pulse rounded-full"></div>
-              ))}
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[...Array(4)].map((_, i) => (
-              <MealCardSkeleton key={i} />
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
 
   if (products.length === 0) {
     // No items to show

@@ -13,14 +13,15 @@ import {
 import { Search, X } from "lucide-react";
 import { useDebounce } from "@/hooks/useDebounce";
 
+
 const categories = [
-  "All",
-  "Pasta",
-  "Pizza",
-  "Burger",
-  "Chawmin",
-  "Local Food",
-  "Biryani",
+  { label: "All Categories", value: "All" },
+  { label: "Pasta", value: "pasta" },
+  { label: "Pizza", value: "pizza" },
+  { label: "Burger", value: "burger" },
+  { label: "Chawmin", value: "chawmin" },
+  { label: "Local Food", value: "local food" },
+  { label: "Biryani", value: "biryani" },
 ];
 
 const sortOptions = [
@@ -108,8 +109,8 @@ export default function MealsFilters() {
             </SelectTrigger>
             <SelectContent>
               {categories.map((cat) => (
-                <SelectItem key={cat} value={cat}>
-                  {cat}
+                <SelectItem key={cat.value} value={cat.value}>
+                  {cat.label}
                 </SelectItem>
               ))}
             </SelectContent>
